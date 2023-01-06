@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Persistences\Contexts\" />
     <Folder Include="Persistences\Interfaces\" />
     <Folder Include="Persistences\Repositories\" />
   </ItemGroup>
