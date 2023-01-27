@@ -4,7 +4,9 @@ using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Commons.Bases.Response;
 using POS.Infrastructure.Persistences.Contexts;
 using POS.Infrastructure.Persistences.Interfaces;
+using POS.Utilities.Static;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace POS.Infrastructure.Persistences.Repositories
 {
@@ -49,40 +51,56 @@ namespace POS.Infrastructure.Persistences.Repositories
             }
 
             if (filters.Sort is null) filters.Sort = "CategoryId";
-            
+
             response.TotalRecords = await categories.CountAsync();
             response.Items = await Ordering(filters, categories, !(bool)filters.Download!).ToListAsync();
             return response;
         }
 
-        public Task<IEnumerable<Category>> ListSelectCategories()
+        public async Task<IEnumerable<Category>> ListSelectCategories()
         {
-            throw new NotImplementedException();
+            var categories = await _context.Categories
+                .Where(x => x.State.Equals((int)StateTypes.Active) && x.AuditDeleteUser == null && x.AuditDeleteDate == null).AsNoTracking().ToListAsync();
+            return categories;
         }
-        public Task<Category> GetCategoryById(int CategoryId)
+        public async Task<Category> GetCategoryById(int CategoryId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RegisterCategory(Category category)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<bool> EditCategory(Category category)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<bool> DeleteCategory(int CategoryId)
-        {
-            throw new NotImplementedException();
+            var category = await _context.Categories!.AsNoTracking().FirstOrDefaultAsync(x => x.CategoryId.Equals(CategoryId));
+            return category!;
         }
 
+        public async Task<bool> RegisterCategory(Category category)
+        {
+            category.AuditCreateUser = 1;
+            category.AuditCreateDate = DateTime.Now;
 
+            await _context.AddAsync(category);
 
+            var recordsAffected = await _context.SaveChangesAsync();
+            return recordsAffected > 0;
+        }
+        public async Task<bool> EditCategory(Category category)
+        {
+            category.AuditUpdateUser = 1;
+            category.AuditUpdateDate = DateTime.Now;
 
+            _context.Update(category);
+            _context.Entry(category).Property(x => x.AuditCreateUser).IsModified = false;
+            _context.Entry(category).Property(x => x.AuditCreateDate).IsModified = false;
 
+            var recordsAffected = await _context.SaveChangesAsync();
+            return recordsAffected > 0;
+        }
+        public async Task<bool> DeleteCategory(int CategoryId)
+        {
+            var category = await _context.Categories.AsNoTracking().SingleOrDefaultAsync(x => x.CategoryId.Equals(CategoryId));
 
+            category!.AuditDeleteUser = 1;
+            category.AuditDeleteDate = DateTime.Now;
 
-
+            _context.Update(category);
+            var recordsAffected = await _context.SaveChangesAsync();
+            return recordsAffected > 0;
+        }
     }
 }
