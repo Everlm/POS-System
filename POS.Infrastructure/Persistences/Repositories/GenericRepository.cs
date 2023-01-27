@@ -1,4 +1,4 @@
-﻿using POS.Infrastructure.Commons.Bases;
+﻿using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Helpers;
 using POS.Infrastructure.Persistences.Interfaces;
 using System.Linq.Dynamic.Core;

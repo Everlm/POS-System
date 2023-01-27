@@ -1,4 +1,4 @@
-﻿namespace POS.Infrastructure.Commons.Bases
+﻿namespace POS.Infrastructure.Commons.Bases.Request
 {
     public class BasePaginationRequest
     {
@@ -12,7 +12,7 @@
             get => NumRecordsPage;
             set
             {
-                NumRecordsPage = (value > NumMaxRecordsPage) ? NumRecordsPage : value;
+                NumRecordsPage = value > NumMaxRecordsPage ? NumRecordsPage : value;
             }
         }
 
