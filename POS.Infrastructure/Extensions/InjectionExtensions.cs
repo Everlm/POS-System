@@ -12,11 +12,13 @@ namespace POS.Infrastructure.Extensions
         public static IServiceCollection AddInjectionInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             var assembly = typeof(POSContext).Assembly.FullName;
+
             services.AddDbContext<POSContext>(
                 options => options.UseSqlServer(
                     configuration.GetConnectionString("POSConnection"), b => b.MigrationsAssembly(assembly)), ServiceLifetime.Transient);
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof (GenericRepository<>));
 
             return services;
         }
