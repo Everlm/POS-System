@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using POS.Application.Dtos.Request;
+using POS.Application.Dtos.Category.Request;
 
 namespace POS.Application.Validators.Category
 {
@@ -11,9 +11,9 @@ namespace POS.Application.Validators.Category
                 .NotNull().WithMessage("field cannot be null")
                 .NotEmpty().WithMessage("field cannot be empty");
 
-            RuleFor(category => category.Description)
-                .NotNull().WithMessage("field cannot be null")
-                .NotEmpty().WithMessage("field cannot be empty");
+            //RuleFor(category => category.Description)
+            //    .NotNull().WithMessage("field cannot be null")
+            //    .NotEmpty().WithMessage("field cannot be empty");
         }
     }
 }

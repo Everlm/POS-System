@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using POS.Application.Dtos.Request;
-using POS.Application.Dtos.Response;
+﻿using Microsoft.AspNetCore.Mvc;
+using POS.Application.Dtos.Category.Request;
 using POS.Application.Interfaces;
 using POS.Infrastructure.Commons.Bases.Request;
 
@@ -60,9 +58,5 @@ namespace POS.API.Controllers
             var response = await _categoryApplication.DeleteCategory(categoryId);
             return Ok(response);
         }
-
-
-
-
     }
 }

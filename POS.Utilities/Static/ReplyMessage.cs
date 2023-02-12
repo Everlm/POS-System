@@ -10,6 +10,7 @@
         public const string MESSAGE_EXISTS = "Already exist";
         public const string MESSAGE_ACTIVATE = "Record activated";
         public const string MESSAGE_TOKEN = "Token generated successfully";
+        public const string MESSAGE_TOKEN_ERROR = "User and Password invalid";
         public const string MESSAGE_VALIDATE = "Validation errors";
         public const string MESSAGE_FAILED = "Failed operation";
     }
