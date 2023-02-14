@@ -9,7 +9,6 @@ namespace POS.Infrastructure.Persistences.Repositories
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-
         public CategoryRepository(POSContext context) : base(context) { }
 
         public async Task<BaseEntityResponse<Category>> ListCategories(BaseFiltersRequest filters)

@@ -18,7 +18,7 @@ namespace POS.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserRequestDto requestDto)
+        public async Task<IActionResult> RegisterUser([FromForm] UserRequestDto requestDto)
         {
             var response = await _userApplication.RegisterUser(requestDto);
             return Ok(response);
