@@ -11,12 +11,14 @@ namespace POS.Infrastructure.Persistences.Repositories
         public ICategoryRepository Category { get; private set; }
         public IUserRepository User { get; private set; }
         public IAzureStorage AzureStorage { get; private set; }
+        public IProviderRepository Provider { get; private set; }
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
             _context = context;
             Category = new CategoryRepository(_context);
             User = new UserRepository(_context);
+            Provider= new ProviderRepository(_context);
             AzureStorage = new AzureStorage(configuration);
 
         }
