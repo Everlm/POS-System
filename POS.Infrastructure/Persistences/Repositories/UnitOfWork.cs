@@ -18,7 +18,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             _context = context;
             Category = new CategoryRepository(_context);
             User = new UserRepository(_context);
-            Provider= new ProviderRepository(_context);
+            Provider = new ProviderRepository(_context);
             AzureStorage = new AzureStorage(configuration);
 
         }

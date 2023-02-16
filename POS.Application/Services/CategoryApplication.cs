@@ -122,6 +122,7 @@ namespace POS.Application.Services
             {
                 response.IsSuccess = false;
                 response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
             }
 
             var category = _mapper.Map<Category>(requestDto);

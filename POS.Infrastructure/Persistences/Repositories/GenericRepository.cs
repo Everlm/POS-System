@@ -69,6 +69,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             var recordsAffected = await _context.SaveChangesAsync();
             return recordsAffected > 0;
         }
+
         public IQueryable<T> GetEntityQuery(Expression<Func<T, bool>>? filter = null)
         {
             IQueryable<T> query = _entity;

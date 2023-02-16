@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using POS.Application.Commons.Base;
 using POS.Application.Dtos.Category.Response;
+using POS.Application.Dtos.Provider.Request;
 using POS.Application.Dtos.Provider.Response;
 using POS.Application.Interfaces;
+using POS.Domain.Entities;
 using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Commons.Bases.Response;
 using POS.Infrastructure.Persistences.Interfaces;
@@ -41,6 +43,106 @@ namespace POS.Application.Services
             {
                 response.IsSuccess = false;
                 response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<ProviderResponseDto>> GetProviderById(int providerId)
+        {
+            var response = new BaseResponse<ProviderResponseDto>();
+            var provider = await _unitOfWork.Provider.GetByIdAsync(providerId);
+
+            if (provider is not null)
+            {
+                response.IsSuccess = true;
+                response.Data = _mapper.Map<ProviderResponseDto>(provider);
+                response.Message = ReplyMessage.MESSAGE_QUERY;
+
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> RegisterProvider(ProviderRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+            var provider = _mapper.Map<Provider>(requestDto);
+
+            response.Data = await _unitOfWork.Provider.RegisterAsync(provider);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message += ReplyMessage.MESSAGE_SAVE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> EditProvider(ProviderRequestDto requestDto, int providerId)
+        {
+            var response = new BaseResponse<bool>();
+            var providerEdit = await GetProviderById(providerId);
+
+            if (providerEdit.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var provider = _mapper.Map<Provider>(requestDto);
+            provider.Id = providerId;
+            response.Data = await _unitOfWork.Provider.EditAsync(provider);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_UPDATE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
+        public  async Task<BaseResponse<bool>> DeleteProvider(int providerId)
+        {
+            var response = new BaseResponse<bool>();
+            var provider = await GetProviderById(providerId);
+
+            if (provider.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.Data = await _unitOfWork.Provider.DeleteAsync(providerId);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_DELETE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
             }
 
             return response;
