@@ -6,7 +6,7 @@ using POS.Infrastructure.Commons.Bases.Request;
 
 namespace POS.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase

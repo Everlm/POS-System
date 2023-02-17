@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using POS.Application.Interfaces;
+using POS.Application.Interfaces.WatchDog;
 using POS.Application.Services;
 using POS.Infrastructure.FileStorage;
 using System.Reflection;
@@ -25,6 +26,7 @@ namespace POS.Application.Extensions
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IProviderApplication, ProviderApplication>();
             services.AddTransient<IAzureStorage, AzureStorage>();
+            services.AddWatchDog();
 
             return services;
         }

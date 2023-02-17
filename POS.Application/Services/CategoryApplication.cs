@@ -9,6 +9,7 @@ using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Commons.Bases.Response;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
+using WatchDog;
 
 namespace POS.Application.Services
 {
@@ -28,22 +29,33 @@ namespace POS.Application.Services
         public async Task<BaseResponse<BaseEntityResponse<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters)
         {
             var response = new BaseResponse<BaseEntityResponse<CategoryResponseDto>>();
-            var categories = await _unitOfWork.Category.ListCategories(filters);
 
-            if (categories is not null)
+            try
             {
-                response.IsSuccess = true;
-                response.Data = _mapper.Map<BaseEntityResponse<CategoryResponseDto>>(categories);
-                response.Message = ReplyMessage.MESSAGE_QUERY;
+                var categories = await _unitOfWork.Category.ListCategories(filters);
+
+                if (categories is not null)
+                {
+                    response.IsSuccess = true;
+                    response.Data = _mapper.Map<BaseEntityResponse<CategoryResponseDto>>(categories);
+                    response.Message = ReplyMessage.MESSAGE_QUERY;
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                }
             }
-            else
+            catch (Exception ex)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
             }
 
             return response;
         }
+
         public async Task<BaseResponse<IEnumerable<CategorySelectResponseDto>>> ListSelectCategories()
         {
             var response = new BaseResponse<IEnumerable<CategorySelectResponseDto>>();
