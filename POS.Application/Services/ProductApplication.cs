@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using POS.Application.Commons.Base;
-using POS.Application.Dtos.Category.Request;
-using POS.Application.Dtos.Category.Response;
+using POS.Application.Dtos.Product.Request;
+using POS.Application.Dtos.Product.Response;
 using POS.Application.Interfaces;
-using POS.Application.Validators.Category;
 using POS.Domain.Entities;
 using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Commons.Bases.Response;
@@ -13,31 +12,28 @@ using WatchDog;
 
 namespace POS.Application.Services
 {
-    public class CategoryApplication : ICategoryApplication
+    public class ProductApplication : IProductApplication
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly CategoryValidator _validateRules;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules)
+        public ProductApplication(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _validateRules = validateRules;
         }
 
-        public async Task<BaseResponse<BaseEntityResponse<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters)
+        public async Task<BaseResponse<BaseEntityResponse<ProductResponseDto>>> ListProducts(BaseFiltersRequest filters)
         {
-            var response = new BaseResponse<BaseEntityResponse<CategoryResponseDto>>();
+            var response = new BaseResponse<BaseEntityResponse<ProductResponseDto>>();
 
             try
             {
-                var categories = await _unitOfWork.Category.ListCategories(filters);
-
-                if (categories is not null)
+                var products = await _unitOfWork.Product.ListProducts(filters);
+                if (products is not null)
                 {
                     response.IsSuccess = true;
-                    response.Data = _mapper.Map<BaseEntityResponse<CategoryResponseDto>>(categories);
+                    response.Data = _mapper.Map<BaseEntityResponse<ProductResponseDto>>(products);
                     response.Message = ReplyMessage.MESSAGE_QUERY;
                 }
                 else
@@ -56,18 +52,18 @@ namespace POS.Application.Services
             return response;
         }
 
-        public async Task<BaseResponse<IEnumerable<CategorySelectResponseDto>>> ListSelectCategories()
+        public async Task<BaseResponse<ProductResponseDto>> GetProductById(int productId)
         {
-            var response = new BaseResponse<IEnumerable<CategorySelectResponseDto>>();
+            var response = new BaseResponse<ProductResponseDto>();
 
             try
             {
-                var categories = await _unitOfWork.Category.GetAllAsync();
+                var product = await _unitOfWork.Product.GetByIdAsync(productId);
 
-                if (categories is not null)
+                if (product is not null)
                 {
                     response.IsSuccess = true;
-                    response.Data = _mapper.Map<IEnumerable<CategorySelectResponseDto>>(categories);
+                    response.Data = _mapper.Map<ProductResponseDto>(product);
                     response.Message = ReplyMessage.MESSAGE_QUERY;
 
                 }
@@ -82,58 +78,20 @@ namespace POS.Application.Services
                 response.IsSuccess = false;
                 response.Message = ReplyMessage.MESSAGE_EXCEPTION;
                 WatchLogger.Log(ex.Message);
+
             }
 
             return response;
         }
-        public async Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId)
-        {
-            var response = new BaseResponse<CategoryResponseDto>();
-
-            try
-            {
-                var category = await _unitOfWork.Category.GetByIdAsync(categoryId);
-
-                if (category is not null)
-                {
-                    response.IsSuccess = true;
-                    response.Data = _mapper.Map<CategoryResponseDto>(category);
-                    response.Message = ReplyMessage.MESSAGE_QUERY;
-
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                }
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
-            }
-
-            return response;
-        }
-        public async Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto)
+        public async Task<BaseResponse<bool>> RegisterProduct(ProductRequestDto requestDto)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var validationResult = await _validateRules.ValidateAsync(requestDto);
+                var product = _mapper.Map<Product>(requestDto);
 
-                if (!validationResult.IsValid)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_VALIDATE;
-                    response.Errors = validationResult.Errors;
-                    return response;
-                }
-
-                var category = _mapper.Map<Category>(requestDto);
-                response.Data = await _unitOfWork.Category.RegisterAsync(category);
+                response.Data = await _unitOfWork.Product.RegisterAsync(product);
 
                 if (response.Data)
                 {
@@ -145,7 +103,6 @@ namespace POS.Application.Services
                     response.IsSuccess = false;
                     response.Message = ReplyMessage.MESSAGE_FAILED;
                 }
-
             }
             catch (Exception ex)
             {
@@ -156,24 +113,25 @@ namespace POS.Application.Services
 
             return response;
         }
-        public async Task<BaseResponse<bool>> EditCategory(CategoryRequestDto requestDto, int categoryId)
+
+        public async Task<BaseResponse<bool>> EditProduct(ProductRequestDto requestDto, int productId)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var categoryEdit = await GetCategoryById(categoryId);
+                var productEdit = await GetProductById(productId);
 
-                if (categoryEdit.Data is null)
+                if (productEdit.Data is null)
                 {
                     response.IsSuccess = false;
                     response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
                     return response;
                 }
 
-                var category = _mapper.Map<Category>(requestDto);
-                category.Id = categoryId;
-                response.Data = await _unitOfWork.Category.EditAsync(category);
+                var product = _mapper.Map<Product>(requestDto);
+                product.Id = productId;
+                response.Data = await _unitOfWork.Product.EditAsync(product);
 
                 if (response.Data)
                 {
@@ -194,23 +152,23 @@ namespace POS.Application.Services
             }
 
             return response;
-
         }
-        public async Task<BaseResponse<bool>> DeleteCategory(int categoryId)
+        public async Task<BaseResponse<bool>> DeleteProduct(int productId)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var category = await GetCategoryById(categoryId);
+                var provider = await GetProductById(productId);
 
-                if (category.Data is null)
+                if (provider.Data is null)
                 {
                     response.IsSuccess = false;
                     response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                    return response;
                 }
 
-                response.Data = await _unitOfWork.Category.DeleteAsync(categoryId);
+                response.Data = await _unitOfWork.Product.DeleteAsync(productId);
 
                 if (response.Data)
                 {
@@ -231,9 +189,6 @@ namespace POS.Application.Services
             }
 
             return response;
-
         }
-
-
     }
 }
