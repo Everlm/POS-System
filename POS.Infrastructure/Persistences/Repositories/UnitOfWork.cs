@@ -13,6 +13,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IAzureStorage AzureStorage { get; private set; }
         public IProviderRepository Provider { get; private set; }
         public IProductRepository Product { get; private set; }
+        public IClientRepository Client { get; private set; }
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
@@ -20,10 +21,12 @@ namespace POS.Infrastructure.Persistences.Repositories
             Category = new CategoryRepository(_context);
             User = new UserRepository(_context);
             Provider = new ProviderRepository(_context);
-            AzureStorage = new AzureStorage(configuration);
             Product = new ProductRepository(_context);
+            Client = new ClientRepository(_context);
+            AzureStorage = new AzureStorage(configuration);
 
         }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

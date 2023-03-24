@@ -14,5 +14,6 @@
         public const string MESSAGE_VALIDATE = "Validation errors";
         public const string MESSAGE_FAILED = "Failed operation";
         public const string MESSAGE_EXCEPTION = "Error, contact the administrator (Admin@gmail.com)";
+
     }
 }
