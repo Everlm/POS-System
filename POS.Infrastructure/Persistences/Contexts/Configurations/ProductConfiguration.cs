@@ -8,12 +8,12 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.Property(e => e.Name).HasMaxLength(50);
-
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Id)
                .HasColumnName("ProductId");
+
+            builder.Property(e => e.Name).HasMaxLength(50);
 
             builder.Property(e => e.SellPrice).HasColumnType("decimal(18, 2)");
 

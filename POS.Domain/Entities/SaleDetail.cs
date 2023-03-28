@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace POS.Domain.Entities
+﻿namespace POS.Domain.Entities
 {
     public partial class SaleDetail
     {
         public int SaleDetailId { get; set; }
         public int? SaleId { get; set; }
         public int? ProductId { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
         public decimal? Price { get; set; }
         public decimal? Discount { get; set; }
         public int AuditCreateUser { get; set; }
