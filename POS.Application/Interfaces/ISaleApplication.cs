@@ -1,5 +1,5 @@
 ﻿using POS.Application.Commons.Base;
-using POS.Application.Dtos.Product.Request;
+using POS.Application.Dtos.Sale.Request;
 using POS.Application.Dtos.Sale.Response;
 using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Commons.Bases.Response;

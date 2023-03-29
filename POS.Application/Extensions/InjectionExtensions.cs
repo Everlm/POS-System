@@ -27,6 +27,7 @@ namespace POS.Application.Extensions
             services.AddScoped<IProviderApplication, ProviderApplication>();
             services.AddScoped<IProductApplication, ProductApplication>();
             services.AddScoped<IClientApplication, ClientApplication>();
+            services.AddScoped<ISaleApplication, SaleApplication>();
             services.AddTransient<IAzureStorage, AzureStorage>();
             services.AddWatchDog();
 

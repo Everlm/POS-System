@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using POS.Application.Dtos.Product.Request;
+using POS.Application.Dtos.Sale.Request;
 using POS.Application.Dtos.Sale.Response;
 using POS.Domain.Entities;
 using POS.Infrastructure.Commons.Bases.Response;
@@ -18,7 +18,7 @@ namespace POS.Application.Mappers
               .ForMember(x => x.StateSale, x => x.MapFrom(y => y.State.Equals((int)StateTypes.Active) ? "Active" : "Inactive"))
               .ReverseMap();
 
-            CreateMap<BaseEntityResponse<Client>, BaseEntityResponse<SaleResponseDto>>()
+            CreateMap<BaseEntityResponse<Sale>, BaseEntityResponse<SaleResponseDto>>()
                 .ReverseMap();
 
             CreateMap<SaleRequestDto, Sale>();

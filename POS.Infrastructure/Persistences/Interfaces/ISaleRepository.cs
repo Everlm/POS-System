@@ -7,6 +7,6 @@ namespace POS.Infrastructure.Persistences.Interfaces
     public interface ISaleRepository : IGenericRepository<Sale>
     {
         Task<BaseEntityResponse<Sale>> ListSales(BaseFiltersRequest filters);
-        Task<Sale> RegisterSale(Sale sale);
+        Task<bool> RegisterSale(Sale sale);
     }
 }

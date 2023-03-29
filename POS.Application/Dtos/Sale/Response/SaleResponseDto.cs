@@ -1,4 +1,5 @@
-﻿using POS.Domain.Entities;
+﻿using POS.Application.Dtos.SaleDetails;
+using POS.Domain.Entities;
 
 namespace POS.Application.Dtos.Sale.Response
 {
@@ -13,6 +14,6 @@ namespace POS.Application.Dtos.Sale.Response
         public DateTime AuditCreateDate { get; set; }
         public int State { get; set; }
         public string? StateSale { get; set; }
-        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        public virtual ICollection<SaleDetailDto> SaleDetails { get; set; }
     }
 }

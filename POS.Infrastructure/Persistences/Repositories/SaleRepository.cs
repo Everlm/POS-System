@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using POS.Domain.Entities;
 using POS.Infrastructure.Commons.Bases.Request;
 using POS.Infrastructure.Commons.Bases.Response;
@@ -60,19 +59,45 @@ namespace POS.Infrastructure.Persistences.Repositories
             return response;
         }
 
-        public async Task<Sale> RegisterSale(Sale sale)
+        public async Task<bool> RegisterSale(Sale sale)
         {
-            Sale Sale = new Sale();
-
-            using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                foreach (SaleDetail item in sale.SaleDetails)
+                try
                 {
-                    Product product = _context.Products.Where(p => p.Id.Equals(item.ProductId)).First();
-                    product.Stock = product.Stock - item.Quantity;
-                }
+                    decimal total = 0;              
+                    var productsIds = sale.SaleDetails.Select(x => x.ProductId).ToList();
+                    var produducts = await _context.Products.Where(p => productsIds.Contains(p.Id)).ToListAsync();
 
-                return Sale;
+                    foreach (SaleDetail item in sale.SaleDetails)
+                    {
+                        Product product = produducts.FirstOrDefault(p => p.Id == item.ProductId);
+
+                        if (product == null)
+                        {
+                            throw new Exception($"Product with ID {item.ProductId} does not exist.");
+                        }
+
+                        product.Stock -= item.Quantity;
+                        decimal subTotal = item.Price * item.Quantity;
+                        decimal discountAmount = subTotal * (item.Discount ?? 0) / 100;
+                        total += subTotal - discountAmount;                     
+
+                        _context.Products.Update(product);
+                    }
+                    
+                    sale.Total = total;
+                                  
+                    await _context.Sales.AddAsync(sale);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;                   
+                }
+                return true;
             }
         }
     }
