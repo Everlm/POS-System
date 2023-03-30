@@ -6,12 +6,12 @@ This project focuses on developing the backend of a point of sale system, with t
 ## Technologies
 
 * [Clean Architecture](https://www.c-sharpcorner.com/article/clean-architecture-in-asp-net-core-web-api/#:~:text=What%20is%20Clean%20Architecture,data%20access%20and%20infrastructure%20concerns.)
-* [ASP.NET Core 6](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application)
 * [Repository and Unit of Work Patterns](https://learn.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
+* [ASP.NET Core 6](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application)
 * [Entity Framework Core 7](https://docs.microsoft.com/en-us/ef/core/)
 * [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16)
 * [WatchDog](https://github.com/IzyPro/WatchDog)
 * [AutoMapper](https://automapper.org/)
 * [FluentValidation](https://fluentvalidation.net/)
 * [MSTest](https://learn.microsoft.com/es-es/dotnet/core/testing/unit-testing-with-mstest)
-* [Clean Architecture](https://www.c-sharpcorner.com/article/clean-architecture-in-asp-net-core-web-api/#:~:text=What%20is%20Clean%20Architecture,data%20access%20and%20infrastructure%20concerns.)
+
