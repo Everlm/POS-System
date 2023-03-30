@@ -11,6 +11,7 @@ This project focuses on developing the backend of a point of sale system, with t
 * [Entity Framework Core 7](https://docs.microsoft.com/en-us/ef/core/)
 * [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16)
 * [WatchDog](https://github.com/IzyPro/WatchDog)
+* [JWT](https://jwt.io/)
 * [AutoMapper](https://automapper.org/)
 * [FluentValidation](https://fluentvalidation.net/)
 * [MSTest](https://learn.microsoft.com/es-es/dotnet/core/testing/unit-testing-with-mstest)
