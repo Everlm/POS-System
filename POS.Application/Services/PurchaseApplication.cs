@@ -54,7 +54,34 @@ namespace POS.Application.Services
 
         public async Task<BaseResponse<PurchaseResponseDto>> GetPurchaseById(int PurchaseId)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<PurchaseResponseDto>();
+
+            try
+            {
+                var purchase = await _unitOfWork.Purcharse.GetByIdAsync(PurchaseId);
+
+                if (purchase is not null)
+                {
+                    response.IsSuccess = true;
+                    response.Data = _mapper.Map<PurchaseResponseDto>(purchase);
+                    response.Message = ReplyMessage.MESSAGE_QUERY;
+
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+
+            }
+
+            return response;
         }
 
         public async Task<BaseResponse<bool>> RegisterPurchase(PurchaseRequestDto requestDto)

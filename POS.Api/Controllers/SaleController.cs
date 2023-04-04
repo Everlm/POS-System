@@ -24,6 +24,13 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{saletId:int}")]
+        public async Task<IActionResult> GetSaleById(int saletId)
+        {
+            var response = await _saleApplication.GetSaleById(saletId);
+            return Ok(response);
+        }
+
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterSale([FromBody] SaleRequestDto requestDto)
         {

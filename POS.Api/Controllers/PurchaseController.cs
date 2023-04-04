@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using POS.Application.Dtos.Purchase.Request;
-using POS.Application.Dtos.Sale.Request;
 using POS.Application.Interfaces;
-using POS.Application.Services;
 using POS.Infrastructure.Commons.Bases.Request;
 
 namespace POS.API.Controllers
@@ -23,6 +20,13 @@ namespace POS.API.Controllers
         public async Task<IActionResult> ListPurchases([FromBody] BaseFiltersRequest filters)
         {
             var response = await _purchaseApplication.ListPurchase(filters);
+            return Ok(response);
+        }
+
+        [HttpGet("{purchaseId:int}")]
+        public async Task<IActionResult> GetPurchaseById(int purchaseId)
+        {
+            var response = await _purchaseApplication.GetPurchaseById(purchaseId);
             return Ok(response);
         }
 

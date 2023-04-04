@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using POS.Application.Commons.Base;
-using POS.Application.Dtos.Provider.Response;
 using POS.Application.Dtos.Sale.Request;
 using POS.Application.Dtos.Sale.Response;
 using POS.Application.Interfaces;
@@ -53,9 +52,36 @@ namespace POS.Application.Services
 
             return response;
         }
-        public Task<BaseResponse<SaleResponseDto>> GetSaleById(int SaleId)
+        public async Task<BaseResponse<SaleResponseDto>> GetSaleById(int SaleId)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<SaleResponseDto>();
+
+            try
+            {
+                var sale = await _unitOfWork.Sale.GetByIdAsync(SaleId);
+
+                if (sale is not null)
+                {
+                    response.IsSuccess = true;
+                    response.Data = _mapper.Map<SaleResponseDto>(sale);
+                    response.Message = ReplyMessage.MESSAGE_QUERY;
+
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+
+            }
+
+            return response;
         }
         public async Task<BaseResponse<bool>> RegisterSale(SaleRequestDto requestDto)
         {

@@ -11,6 +11,7 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IClientRepository Client { get; }
         ISaleRepository Sale { get; }
         IPurchaseRepository Purcharse { get; }
+        IDepartmentRepository Department { get; }
         IAzureStorage AzureStorage { get; }
         void SaveChanges();
         Task SaveChangesAsync();

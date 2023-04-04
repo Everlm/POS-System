@@ -10,12 +10,14 @@ namespace POS.Infrastructure.Persistences.Repositories
         private readonly POSContext _context;
         public ICategoryRepository Category { get; private set; }
         public IUserRepository User { get; private set; }
-        public IAzureStorage AzureStorage { get; private set; }
         public IProviderRepository Provider { get; private set; }
         public IProductRepository Product { get; private set; }
         public IClientRepository Client { get; private set; }
         public ISaleRepository Sale { get; private set; }
         public IPurchaseRepository Purcharse { get; private set; }
+        public IDepartmentRepository Department { get; private set; }
+        public IAzureStorage AzureStorage { get; private set; }
+
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
@@ -27,6 +29,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             Client = new ClientRepository(_context);
             Sale = new SaleRepository(_context);
             Purcharse = new PurchaseRepository(_context);
+            Department = new DepartmentRepository(_context);
             AzureStorage = new AzureStorage(configuration);
 
         }
