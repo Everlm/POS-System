@@ -1,4 +1,4 @@
-﻿using FluentValidation.AspNetCore;
+﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using POS.Application.Interfaces;
@@ -14,12 +14,7 @@ namespace POS.Application.Extensions
         public static IServiceCollection AddInjectionApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(configuration);
-
-            services.AddFluentValidation(options =>
-            {
-                options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic));
-            });
-
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddScoped<ICategoryApplication, CategoryApplication>();
@@ -28,6 +23,7 @@ namespace POS.Application.Extensions
             services.AddScoped<IProductApplication, ProductApplication>();
             services.AddScoped<IClientApplication, ClientApplication>();
             services.AddScoped<ISaleApplication, SaleApplication>();
+            services.AddScoped<IPurchaseApplication, PurchaseApplication>();
             services.AddTransient<IAzureStorage, AzureStorage>();
             services.AddWatchDog();
 

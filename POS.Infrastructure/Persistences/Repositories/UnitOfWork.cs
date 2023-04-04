@@ -15,6 +15,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IProductRepository Product { get; private set; }
         public IClientRepository Client { get; private set; }
         public ISaleRepository Sale { get; private set; }
+        public IPurchaseRepository Purcharse { get; private set; }
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
@@ -25,6 +26,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             Product = new ProductRepository(_context);
             Client = new ClientRepository(_context);
             Sale = new SaleRepository(_context);
+            Purcharse = new PurchaseRepository(_context);
             AzureStorage = new AzureStorage(configuration);
 
         }

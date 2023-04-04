@@ -8,6 +8,11 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<Purcharse> builder)
         {
+            builder.HasKey(e => e.Id);
+
+            builder.Property(e => e.Id)
+                .HasColumnName("PurcharseId");
+
             builder.Property(e => e.Tax).HasColumnType("decimal(18, 2)");
 
             builder.Property(e => e.Total).HasColumnType("decimal(18, 2)");
