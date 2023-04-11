@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using POS.Application.Dtos.Category.Request;
 using POS.Application.Dtos.Department.Request;
 using POS.Application.Interfaces;
-using POS.Domain.Entities;
 using POS.Infrastructure.Commons.Bases.Request;
 
 namespace POS.API.Controllers

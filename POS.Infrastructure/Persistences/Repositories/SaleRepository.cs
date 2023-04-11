@@ -71,7 +71,7 @@ namespace POS.Infrastructure.Persistences.Repositories
 
                     foreach (SaleDetail item in sale.SaleDetails)
                     {
-                        Product product = products.FirstOrDefault(p => p.Id == item.ProductId);
+                        Product? product = products.FirstOrDefault(p => p.Id == item.ProductId);
 
                         if (product == null)
                         {
