@@ -17,6 +17,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IPurchaseRepository Purcharse { get; private set; }
         public IDepartmentRepository Department { get; private set; }
         public IProvinceRepository Province { get; private set; }
+        public IDistrictRepository District { get; private set; }
         public IAzureStorage AzureStorage { get; private set; }
 
 
@@ -33,6 +34,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             Purcharse = new PurchaseRepository(_context);
             Department = new DepartmentRepository(_context);
             Province = new ProvinceRepository(_context);
+            District = new DistrictRepository(_context);
             AzureStorage = new AzureStorage(configuration);
 
         }

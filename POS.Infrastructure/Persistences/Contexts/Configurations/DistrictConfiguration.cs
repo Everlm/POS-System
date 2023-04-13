@@ -8,6 +8,11 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<District> builder)
         {
+            builder.HasKey(e => e.Id);
+
+            builder.Property(e => e.Id)
+                .HasColumnName("DistrictId");
+
             builder.Property(e => e.Name)
                      .HasMaxLength(100)
                      .IsUnicode(false);
