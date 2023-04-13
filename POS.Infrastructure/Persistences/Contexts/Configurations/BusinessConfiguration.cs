@@ -8,6 +8,12 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<Business> builder)
         {
+
+            builder.HasKey(e => e.Id);
+
+            builder.Property(e => e.Id)
+                .HasColumnName("BusinessId");
+
             builder.ToTable("Business");
 
             builder.Property(e => e.Address).IsUnicode(false);

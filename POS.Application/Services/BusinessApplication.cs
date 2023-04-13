@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using POS.Application.Commons.Base;
-using POS.Application.Dtos.Department.Request;
-using POS.Application.Dtos.Department.Response;
+using POS.Application.Dtos.Business.Request;
+using POS.Application.Dtos.Business.Response;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;
 using POS.Infrastructure.Commons.Bases.Request;
@@ -12,29 +12,28 @@ using WatchDog;
 
 namespace POS.Application.Services
 {
-    public class DepartmentApplication : IDepartmentApplication
+    public class BusinessApplication : IBusinessApplication
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public DepartmentApplication(IUnitOfWork unitOfWork, IMapper mapper)
+        public BusinessApplication(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
-        public async Task<BaseResponse<BaseEntityResponse<DeparmentReponseDto>>> ListDepartment(BaseFiltersRequest filters)
+        public async Task<BaseResponse<BaseEntityResponse<BusinessResponseDto>>> ListBusiness(BaseFiltersRequest filters)
         {
-            var response = new BaseResponse<BaseEntityResponse<DeparmentReponseDto>>();
+            var response = new BaseResponse<BaseEntityResponse<BusinessResponseDto>>();
 
             try
             {
-                var departatments = await _unitOfWork.Department.ListDepartments(filters);
+                var business = await _unitOfWork.Business.ListBusiness(filters);
 
-                if (departatments is not null)
+                if (business is not null)
                 {
                     response.IsSuccess = true;
-                    response.Data = _mapper.Map<BaseEntityResponse<DeparmentReponseDto>>(departatments);
+                    response.Data = _mapper.Map<BaseEntityResponse<BusinessResponseDto>>(business);
                     response.Message = ReplyMessage.MESSAGE_QUERY;
                 }
                 else
@@ -52,19 +51,18 @@ namespace POS.Application.Services
 
             return response;
         }
-
-        public async Task<BaseResponse<DeparmentReponseDto>> GetDepartmentById(int departmentId)
+        public async Task<BaseResponse<BusinessResponseDto>> GetBusinessById(int businessId)
         {
-            var response = new BaseResponse<DeparmentReponseDto>();
+            var response = new BaseResponse<BusinessResponseDto>();
 
             try
             {
-                var departatment = await _unitOfWork.Department.GetByIdAsync(departmentId);
+                var business = await _unitOfWork.Business.GetByIdAsync(businessId);
 
-                if (departatment is not null)
+                if (business is not null)
                 {
                     response.IsSuccess = true;
-                    response.Data = _mapper.Map<DeparmentReponseDto>(departatment);
+                    response.Data = _mapper.Map<BusinessResponseDto>(business);
                     response.Message = ReplyMessage.MESSAGE_QUERY;
 
                 }
@@ -84,15 +82,15 @@ namespace POS.Application.Services
             return response;
         }
 
-        public async Task<BaseResponse<bool>> RegisterDepartment(DeparmentRequestDto requestDto)
+        public async Task<BaseResponse<bool>> RegisterBusiness(BusinessRequestDto requestDto)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var department = _mapper.Map<Department>(requestDto);
+                var business = _mapper.Map<Business>(requestDto);
 
-                response.Data = await _unitOfWork.Department.RegisterAsync(department);
+                response.Data = await _unitOfWork.Business.RegisterAsync(business);
 
                 if (response.Data)
                 {
@@ -114,25 +112,24 @@ namespace POS.Application.Services
 
             return response;
         }
-
-        public async Task<BaseResponse<bool>> EditDepartment(DeparmentRequestDto requestDto, int departmentId)
+        public async Task<BaseResponse<bool>> EditBusiness(BusinessRequestDto requestDto, int businessId)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var departmentEdit = await GetDepartmentById(departmentId);
+                var businessEdit = await GetBusinessById(businessId);
 
-                if (departmentEdit.Data is null)
+                if (businessEdit.Data is null)
                 {
                     response.IsSuccess = false;
                     response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
                     return response;
                 }
 
-                var department = _mapper.Map<Department>(requestDto);
-                department.Id = departmentId;
-                response.Data = await _unitOfWork.Department.EditAsync(department);
+                var business = _mapper.Map<Business>(requestDto);
+                business.Id = businessId;
+                response.Data = await _unitOfWork.Business.EditAsync(business);
 
                 if (response.Data)
                 {
@@ -154,21 +151,22 @@ namespace POS.Application.Services
 
             return response;
         }
-        public async Task<BaseResponse<bool>> DeleteDepartment(int departmentId)
+
+        public async Task<BaseResponse<bool>> DeleteBusiness(int businessId)
         {
             var response = new BaseResponse<bool>();
 
             try
             {
-                var department = await GetDepartmentById(departmentId);
+                var business = await GetBusinessById(businessId);
 
-                if (department.Data is null)
+                if (business.Data is null)
                 {
                     response.IsSuccess = false;
                     response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
                 }
 
-                response.Data = await _unitOfWork.Department.DeleteAsync(departmentId);
+                response.Data = await _unitOfWork.Business.DeleteAsync(businessId);
 
                 if (response.Data)
                 {
@@ -190,6 +188,5 @@ namespace POS.Application.Services
 
             return response;
         }
-
     }
 }
