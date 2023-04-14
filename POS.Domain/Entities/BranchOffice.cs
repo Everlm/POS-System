@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace POS.Domain.Entities
+﻿namespace POS.Domain.Entities
 {
-    public partial class BranchOffice
+    public partial class BranchOffice :BaseEntity
     {
         public BranchOffice()
         {
@@ -11,7 +8,6 @@ namespace POS.Domain.Entities
             UsersBranchOffices = new HashSet<UsersBranchOffice>();
         }
 
-        public int BranchOfficeId { get; set; }
         public string Code { get; set; } = null!;
         public int BusinessId { get; set; }
         public string Name { get; set; } = null!;
@@ -20,7 +16,6 @@ namespace POS.Domain.Entities
         public string Address { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Phone { get; set; } = null!;
-        public int State { get; set; }
 
         public virtual Business Business { get; set; } = null!;
         public virtual District District { get; set; } = null!;

@@ -12,7 +12,7 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Id)
-                .HasColumnName("BusinessId");
+                .HasColumnName("BranchOfficeId");
 
             builder.ToTable("Business");
 

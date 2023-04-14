@@ -15,6 +15,7 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IProvinceRepository Province { get; }
         IDistrictRepository District { get; }
         IBusinessRepository Business { get; }
+        IBranchOfficeRepository BranchOffice { get; }
         IAzureStorage AzureStorage { get; }
         void SaveChanges();
         Task SaveChangesAsync();

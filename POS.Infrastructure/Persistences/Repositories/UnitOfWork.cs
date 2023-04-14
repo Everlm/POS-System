@@ -19,6 +19,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IProvinceRepository Province { get; private set; }
         public IDistrictRepository District { get; private set; }
         public IBusinessRepository Business { get; private set; }
+        public IBranchOfficeRepository BranchOffice { get; private set; }
         public IAzureStorage AzureStorage { get; private set; }
         
 
@@ -38,6 +39,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             Province = new ProvinceRepository(_context);
             District = new DistrictRepository(_context);
             Business = new BusinessRepository(_context);
+            BranchOffice = new BranchOfficeRepository(_context);
             AzureStorage = new AzureStorage(configuration);
 
         }

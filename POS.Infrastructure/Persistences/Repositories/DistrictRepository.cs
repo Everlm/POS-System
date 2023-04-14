@@ -10,13 +10,15 @@ namespace POS.Infrastructure.Persistences.Repositories
     public class DistrictRepository : GenericRepository<District>, IDistrictRepository
     {
         public DistrictRepository(POSContext context) : base(context) { }
-        
+
 
         public async Task<BaseEntityResponse<District>> ListDistrics(BaseFiltersRequest filters)
         {
             var response = new BaseEntityResponse<District>();
 
-            var district = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null);
+            var district = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null)
+                .Include(p => p.Province)
+                .AsNoTracking();
 
             if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
             {
