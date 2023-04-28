@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS.Application.Dtos.Provider.Request;
 using POS.Application.Interfaces;
 using POS.Infrastructure.Commons.Bases.Request;
 
 namespace POS.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProviderController : ControllerBase

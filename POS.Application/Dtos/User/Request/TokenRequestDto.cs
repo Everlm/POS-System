@@ -2,7 +2,7 @@
 {
     public class TokenRequestDto
     {
-        public string? UnerName { get; set; }
+        public string? Username { get; set; }
         public string? Password { get; set; }
     }
 }

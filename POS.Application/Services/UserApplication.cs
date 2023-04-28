@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver.Core.WireProtocol.Messages;
 using POS.Application.Commons.Base;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
@@ -72,7 +73,7 @@ namespace POS.Application.Services
 
             try
             {
-                var account = await _unitOfWork.User.AccountByUserName(requestDto.UnerName!);
+                var account = await _unitOfWork.User.AccountByUserName(requestDto.Username!);
 
                 if (account is not null)
                 {
