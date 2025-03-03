@@ -1,6 +1,7 @@
 using POS.API.Extensions;
 using POS.Application.Extensions;
 using POS.Infrastructure.Extensions;
+using POS.Utilities.AppSettings;
 using WatchDog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
+builder.Services.Configure<AppSettings>(Configuration.GetSection("GoogleSettings"));
 
 builder.Services.AddCors(options =>
 {

@@ -14,6 +14,8 @@
         public const string MESSAGE_VALIDATE = "Validation errors";
         public const string MESSAGE_FAILED = "Failed operation";
         public const string MESSAGE_EXCEPTION = "Error, contact the administrator (Admin@gmail.com)";
+        public const string MESSAGE_AUTHGOOGLE_ERROR = "Su cuenta no se encuentra registrada en el sistema";
+        public const string MESSAGE_AUTHTYPE_ERROR = "Por favor intente iniciar sesion por otro medio";
 
     }
 }

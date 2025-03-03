@@ -7,6 +7,7 @@ using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace POS.Infrastructure.Persistences.Repositories
 {
@@ -28,12 +29,14 @@ namespace POS.Infrastructure.Persistences.Repositories
 
             return getAll;
         }
+
         public async Task<T> GetByIdAsync(int id)
         {
             var GetById = await _entity!.AsNoTracking().FirstOrDefaultAsync(x => x.Id.Equals(id));
 
             return GetById!;
         }
+
         public async Task<bool> RegisterAsync(T entity)
         {
             entity.AuditCreateUser = 1;
@@ -44,6 +47,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             var recordsAffected = await _context.SaveChangesAsync();
             return recordsAffected > 0;
         }
+
         public async Task<bool> EditAsync(T entity)
         {
             entity.AuditUpdateUser = 1;
@@ -79,9 +83,13 @@ namespace POS.Infrastructure.Persistences.Repositories
             return query;
         }
 
-        public IQueryable<TDTO> Ordering<TDTO>(BasePaginationRequest request, IQueryable<TDTO> queryable, bool pagination = false) where TDTO : class
+        public IQueryable<TDTO> Ordering<TDTO>(BasePaginationRequest request,
+            IQueryable<TDTO> queryable, bool pagination = false) where TDTO : class
         {
-            IQueryable<TDTO> queryDto = request.Order == "desc" ? queryable.OrderBy($"{request.Sort} descending") : queryable.OrderBy($"{request.Sort} ascending");
+            IQueryable<TDTO> queryDto =
+                request.Order == "desc"
+                ? queryable.OrderBy($"{request.Sort} descending")
+                : queryable.OrderBy($"{request.Sort} ascending");
 
             if (pagination) queryDto = queryDto.Paginate(request);
 
