@@ -16,7 +16,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             var response = new BaseEntityResponse<Provider>();
 
             var providers = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null)
-                .Include(x =>x.DocumentType)
+                .Include(x => x.DocumentType)
                 .AsNoTracking();
 
             if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))

@@ -7,69 +7,69 @@ using POS.Utilities.Static;
 
 namespace POS.Test.Category
 {
-    [TestClass]
-    public class CategoryApplicationTest
-    {
-        private static WebApplicationFactory<Program>? _factory = null;
-        private static IServiceScopeFactory? _scopeFactory = null;
-
-        [ClassInitialize]
-        public static void Initialize(TestContext _testContext)
+        [TestClass]
+        public class CategoryApplicationTest
         {
-            _factory = new CustomWebApplicationFactory();
-            _scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-        }
+            private static WebApplicationFactory<Program>? _factory = null;
+            private static IServiceScopeFactory? _scopeFactory = null;
 
-        [TestMethod]
-        public async Task RegisterCategory_WhenSendingNullValuesOrEmpty_ValidationError()
-        {
-            using var scope = _scopeFactory?.CreateScope();
-            var context = scope?.ServiceProvider.GetService<ICategoryApplication>();
-
-            //Arrage
-            var name = "";
-            var description = "";
-            var state = 1;
-            var expected = ReplyMessage.MESSAGE_VALIDATE;
-
-            //Act
-            var result = await context!.RegisterCategory(new CategoryRequestDto()
+            [ClassInitialize]
+            public static void Initialize(TestContext _testContext)
             {
-                Name = name,
-                Description = description,
-                State = state,
-            });
+                _factory = new CustomWebApplicationFactory();
+                _scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            }
 
-            var current = result.Message;
-
-            //Assert
-            Assert.AreEqual(expected, current);
-        }
-
-        [TestMethod]
-        public async Task RegisterCategory_WhenSendingCorrectValues_RegisteredSuccessfully()
-        {
-            using var scope = _scopeFactory?.CreateScope();
-            var context = scope?.ServiceProvider.GetService<ICategoryApplication>();
-
-            //Arrage
-            var name = "New register";
-            var description = "new description";
-            var state = 1;
-            var expected = ReplyMessage.MESSAGE_SAVE;
-
-            //Act
-            var result = await context!.RegisterCategory(new CategoryRequestDto()
+            [TestMethod]
+            public async Task RegisterCategory_WhenSendingNullValuesOrEmpty_ValidationError()
             {
-                Name = name,
-                Description = description,
-                State = state,
-            });
+                using var scope = _scopeFactory?.CreateScope();
+                var context = scope?.ServiceProvider.GetService<ICategoryApplication>();
 
-            var current = result.Message;
+                //Arrage
+                var name = "";
+                var description = "";
+                var state = 1;
+                var expected = ReplyMessage.MESSAGE_VALIDATE;
 
-            //Assert
-            Assert.AreEqual(expected, current);
+                //Act
+                var result = await context!.RegisterCategory(new CategoryRequestDto()
+                {
+                    Name = name,
+                    Description = description,
+                    State = state,
+                });
+
+                var current = result.Message;
+
+                //Assert
+                Assert.AreEqual(expected, current);
+            }
+
+            [TestMethod]
+            public async Task RegisterCategory_WhenSendingCorrectValues_RegisteredSuccessfully()
+            {
+                using var scope = _scopeFactory?.CreateScope();
+                var context = scope?.ServiceProvider.GetService<ICategoryApplication>();
+
+                //Arrage
+                var name = "New register";
+                var description = "new description";
+                var state = 1;
+                var expected = ReplyMessage.MESSAGE_SAVE;
+
+                //Act
+                var result = await context!.RegisterCategory(new CategoryRequestDto()
+                {
+                    Name = name,
+                    Description = description,
+                    State = state,
+                });
+
+                var current = result.Message;
+
+                //Assert
+                Assert.AreEqual(expected, current);
+            }
         }
     }
-}
