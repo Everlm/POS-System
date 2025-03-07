@@ -7,6 +7,7 @@ namespace POS.Infrastructure.Persistences.Interfaces
         ICategoryRepository Category { get; }
         IUserRepository User { get; }
         IProviderRepository Provider { get; }
+        IDocumentTypeRepository DocumentType { get; }
         IProductRepository Product { get; }
         IClientRepository Client { get; }
         ISaleRepository Sale { get; }

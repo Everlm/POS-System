@@ -20,6 +20,7 @@ namespace POS.Application.Extensions
             services.AddScoped<ICategoryApplication, CategoryApplication>();
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IProviderApplication, ProviderApplication>();
+            services.AddScoped<IDocumentTypeApplication, DocumentTypeApplication>();
             services.AddScoped<IProductApplication, ProductApplication>();
             services.AddScoped<IClientApplication, ClientApplication>();
             services.AddScoped<ISaleApplication, SaleApplication>();

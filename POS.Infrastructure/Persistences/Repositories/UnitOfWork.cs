@@ -21,9 +21,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IBusinessRepository Business { get; private set; }
         public IBranchOfficeRepository BranchOffice { get; private set; }
         public IAzureStorage AzureStorage { get; private set; }
-        
-
-
+        public IDocumentTypeRepository DocumentType { get; private set; }
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
@@ -31,6 +29,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             Category = new CategoryRepository(_context);
             User = new UserRepository(_context);
             Provider = new ProviderRepository(_context);
+            DocumentType = new DocumentTypeRepository(_context);
             Product = new ProductRepository(_context);
             Client = new ClientRepository(_context);
             Sale = new SaleRepository(_context);
