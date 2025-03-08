@@ -4,7 +4,7 @@ name: .NET Build
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "master", "main", "develop" ]
   pull_request:
     branches: [ "main" ]
 
@@ -22,8 +22,8 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: 📦 Restore Dependencies
-        run: dotnet restore MySolution.sln
+        run: dotnet restore "POS System.sln" 
 
       - name: 🏗️ Build Solution
-        run: dotnet build MySolution.sln --configuration Release --no-restore
+        run: dotnet build "POS System.sln" --configuration Release --no-restore
 
