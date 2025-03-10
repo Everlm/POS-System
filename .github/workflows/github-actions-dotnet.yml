@@ -28,5 +28,5 @@ jobs:
         run: dotnet build "POS System.sln" --configuration Release --no-restore
 
       - name: 🧪 Run Tests
-        run: dotnet test "POS System.sln" --configuration Release --no-build --logger trx --results-directory TestResults
+        run: dotnet test "POS.UnitTest/POS.UnitTests.csproj" --configuration Release --no-build --logger trx --results-directory TestResults
 
