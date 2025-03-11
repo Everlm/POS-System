@@ -15,10 +15,10 @@ namespace POS.Infrastructure.Extensions
 
             services.AddDbContext<POSContext>(
                 options => options.UseSqlServer(
-                    configuration.GetConnectionString("POSConnection"), b => b.MigrationsAssembly(assembly)), ServiceLifetime.Transient);
+                    configuration.GetConnectionString("POSConnection"), b => b.MigrationsAssembly(assembly)), ServiceLifetime.Scoped);
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof (GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;
         }
