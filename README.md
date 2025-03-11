@@ -14,5 +14,5 @@ This project focuses on developing the backend of a point of sale system, with t
 * [JWT](https://jwt.io/)
 * [AutoMapper](https://automapper.org/)
 * [FluentValidation](https://fluentvalidation.net/)
-* [MSTest](https://learn.microsoft.com/es-es/dotnet/core/testing/unit-testing-with-mstest)
+* [XUnit](https://xunit.net/#documentation)
 

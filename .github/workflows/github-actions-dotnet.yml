@@ -27,3 +27,6 @@ jobs:
       - name: 🏗️ Build Solution
         run: dotnet build "POS System.sln" --configuration Release --no-restore
 
+      - name: 🧪 Run Tests
+        run: dotnet test "POS.UnitTest/POS.UnitTest.csproj" --configuration Release --no-build --logger trx --results-directory TestResults
+
