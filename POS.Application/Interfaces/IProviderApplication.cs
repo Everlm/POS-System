@@ -9,7 +9,7 @@ namespace POS.Application.Interfaces
     public interface IProviderApplication
     {
         Task<BaseResponse<BaseEntityResponse<ProviderResponseDto>>> ListProviders(BaseFiltersRequest filters);
-        Task<BaseResponse<ProviderResponseDto>> GetProviderById(int providerId);
+        Task<BaseResponse<ProviderByIdResponseDto>> GetProviderById(int providerId);
         Task<BaseResponse<bool>> RegisterProvider(ProviderRequestDto requestDto);
         Task<BaseResponse<bool>> EditProvider(ProviderRequestDto requestDto, int providerId);
         Task<BaseResponse<bool>> DeleteProvider(int providerId);
