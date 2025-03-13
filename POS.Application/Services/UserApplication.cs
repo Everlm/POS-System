@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using POS.Application.Commons.Base;
+using POS.Application.Commons.Bases.Response;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;
+using POS.Infrastructure.FileStorage;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using WatchDog;
 using BC = BCrypt.Net.BCrypt;
 
@@ -19,12 +15,14 @@ namespace POS.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-       
+        private readonly IAzureStorage _azureStorage;
 
-        public UserApplication(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public UserApplication(IUnitOfWork unitOfWork, IMapper mapper, IAzureStorage azureStorage)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;  
+            _mapper = mapper;
+            _azureStorage = azureStorage;
         }
 
         public async Task<BaseResponse<bool>> RegisterUser(UserRequestDto requestDto)
@@ -38,7 +36,7 @@ namespace POS.Application.Services
 
                 if (requestDto.Image is not null)
                 {
-                    account.Image = await _unitOfWork.AzureStorage.SaveFile(AzureContainers.USERS, requestDto.Image);
+                    account.Image = await _azureStorage.SaveFile(AzureContainers.USERS, requestDto.Image);
                 }
 
                 response.Data = await _unitOfWork.User.RegisterAsync(account);

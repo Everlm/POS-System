@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases.Request;
-using POS.Infrastructure.Helpers;
 using POS.Infrastructure.Persistences.Contexts;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace POS.Infrastructure.Persistences.Repositories
 {
@@ -22,10 +18,28 @@ namespace POS.Infrastructure.Persistences.Repositories
             _entity = _context.Set<T>();
         }
 
+
+        public IQueryable<T> GetAllQueryable()
+        {
+            var getAllQueryable = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null);
+            return getAllQueryable;
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             var getAll = await _entity
                 .Where(x => x.State.Equals((int)StateTypes.Active) && x.AuditDeleteUser == null && x.AuditDeleteDate == null).AsNoTracking().ToListAsync();
+
+            return getAll;
+        }
+
+        public async Task<IEnumerable<T>> GetSelectAsync()
+        {
+            var getAll = await _entity
+               .Where(x => x.State
+                   .Equals((int)StateTypes.Active) && x.AuditDeleteUser == null && x.AuditDeleteDate == null)
+               .AsNoTracking()
+               .ToListAsync();
 
             return getAll;
         }
@@ -83,19 +97,6 @@ namespace POS.Infrastructure.Persistences.Repositories
             return query;
         }
 
-        public IQueryable<TDTO> Ordering<TDTO>(BasePaginationRequest request,
-            IQueryable<TDTO> queryable, bool pagination = false) where TDTO : class
-        {
-            IQueryable<TDTO> queryDto =
-                request.Order == "desc"
-                ? queryable.OrderBy($"{request.Sort} descending")
-                : queryable.OrderBy($"{request.Sort} ascending");
-
-            if (pagination) queryDto = queryDto.Paginate(request);
-
-            return queryDto;
-
-        }
 
     }
 }

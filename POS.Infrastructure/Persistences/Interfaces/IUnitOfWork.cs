@@ -1,23 +1,14 @@
-﻿using POS.Infrastructure.FileStorage;
+﻿using POS.Domain.Entities;
 
 namespace POS.Infrastructure.Persistences.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        ICategoryRepository Category { get; }
+
+        IGenericRepository<Category> Category { get; }
+        IGenericRepository<Provider> Provider { get; }
+        IGenericRepository<DocumentType> DocumentType { get; }
         IUserRepository User { get; }
-        IProviderRepository Provider { get; }
-        IDocumentTypeRepository DocumentType { get; }
-        IProductRepository Product { get; }
-        IClientRepository Client { get; }
-        ISaleRepository Sale { get; }
-        IPurchaseRepository Purcharse { get; }
-        IDepartmentRepository Department { get; }
-        IProvinceRepository Province { get; }
-        IDistrictRepository District { get; }
-        IBusinessRepository Business { get; }
-        IBranchOfficeRepository BranchOffice { get; }
-        IAzureStorage AzureStorage { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }

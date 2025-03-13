@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using POS.Application.Commons.Base;
+using Microsoft.EntityFrameworkCore;
+using POS.Application.Commons.Bases.Request;
+using POS.Application.Commons.Bases.Response;
+using POS.Application.Commons.Ordering;
 using POS.Application.Dtos.Category.Request;
 using POS.Application.Dtos.Category.Response;
 using POS.Application.Interfaces;
 using POS.Application.Validators.Category;
 using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases.Request;
-using POS.Infrastructure.Commons.Bases.Response;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
 using WatchDog;
@@ -18,33 +19,36 @@ namespace POS.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly CategoryValidator _validateRules;
+        private readonly IOrderingQuery _orderingQuery;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules)
+        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validateRules = validateRules;
+            _orderingQuery = orderingQuery;
         }
 
-        public async Task<BaseResponse<BaseEntityResponse<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters)
+        public async Task<BaseResponse<IEnumerable<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters)
         {
-            var response = new BaseResponse<BaseEntityResponse<CategoryResponseDto>>();
+            var response = new BaseResponse<IEnumerable<CategoryResponseDto>>();
 
             try
             {
-                var categories = await _unitOfWork.Category.ListCategories(filters);
+                var categoriesQueryable = _unitOfWork.Category.GetAllQueryable();
 
-                if (categories is not null)
-                {
-                    response.IsSuccess = true;
-                    response.Data = _mapper.Map<BaseEntityResponse<CategoryResponseDto>>(categories);
-                    response.Message = ReplyMessage.MESSAGE_QUERY;
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                }
+                var categories = ApplyFilters(categoriesQueryable, filters);
+                filters.Sort ??= "Id";
+
+                var items = await _orderingQuery
+                    .Ordering(filters, categories, !(bool)filters.Download!)
+                    .ToListAsync();
+                
+                response.IsSuccess = true;
+                response.Data = _mapper.Map<IEnumerable<CategoryResponseDto>>(items);
+                response.TotalRecords = await categories.CountAsync();
+                response.Message = ReplyMessage.MESSAGE_QUERY;
+
             }
             catch (Exception ex)
             {
@@ -55,6 +59,33 @@ namespace POS.Application.Services
 
             return response;
         }
+
+        private static IQueryable<Category> ApplyFilters(IQueryable<Category> query, BaseFiltersRequest filters)
+        {
+            if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
+            {
+                query = filters.NumFilter switch
+                {
+                    1 => query.Where(x => x.Name!.Contains(filters.TextFilter)),
+                    2 => query.Where(x => x.Description!.Contains(filters.TextFilter)),
+                    _ => query
+                };
+            }
+
+            if (filters.StateFilter is not null)
+            {
+                query = query.Where(x => x.State == filters.StateFilter);
+            }
+
+            if (!string.IsNullOrEmpty(filters.StartDate) && !string.IsNullOrEmpty(filters.EndDate) &&
+                DateTime.TryParse(filters.StartDate, out var startDate) && DateTime.TryParse(filters.EndDate, out var endDate))
+            {
+                query = query.Where(x => x.AuditCreateDate >= startDate && x.AuditCreateDate <= endDate.AddDays(1));
+            }
+
+            return query;
+        }
+
 
         public async Task<BaseResponse<IEnumerable<CategorySelectResponseDto>>> ListSelectCategories()
         {

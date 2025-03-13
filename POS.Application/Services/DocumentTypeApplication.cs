@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using POS.Application.Commons.Base;
-using POS.Application.Dtos.Category.Response;
+using POS.Application.Commons.Bases.Response;
 using POS.Application.Dtos.DocumentType.Response;
 using POS.Application.Interfaces;
-using POS.Infrastructure.Commons.Bases.Response;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
 using WatchDog;
@@ -27,7 +25,7 @@ namespace POS.Application.Services
 
             try
             {
-                var documentTypes = await _unitOfWork.DocumentType.ListDocumentTypes();
+                var documentTypes = await _unitOfWork.DocumentType.GetSelectAsync();
 
                 if (documentTypes is not null)
                 {
