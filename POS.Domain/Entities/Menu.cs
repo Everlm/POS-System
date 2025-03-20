@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace POS.Domain.Entities
+﻿namespace POS.Domain.Entities
 {
     public partial class Menu
     {

@@ -38,6 +38,8 @@ namespace POS.Infrastructure.Persistences.Contexts
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
         public virtual DbSet<UsersBranchOffice> UsersBranchOffices { get; set; } = null!;
+        public virtual DbSet<Warehouse> Warehouses { get; set; } = null!;
+        public virtual DbSet<ProductStock> ProductStock { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

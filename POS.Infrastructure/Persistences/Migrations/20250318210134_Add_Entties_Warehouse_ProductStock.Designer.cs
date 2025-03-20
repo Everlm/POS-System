@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POS.Infrastructure.Persistences.Contexts;
 
@@ -11,9 +12,10 @@ using POS.Infrastructure.Persistences.Contexts;
 namespace POS.Infrastructure.Persistences.Migrations
 {
     [DbContext(typeof(POSContext))]
-    partial class POSContextModelSnapshot : ModelSnapshot
+    [Migration("20250318210134_Add_Entties_Warehouse_ProductStock")]
+    partial class Add_Entties_Warehouse_ProductStock
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -544,6 +546,9 @@ namespace POS.Infrastructure.Persistences.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("ProviderId")
+                        .HasColumnType("int");
+
                     b.Property<int>("State")
                         .HasColumnType("int");
 
@@ -556,6 +561,8 @@ namespace POS.Infrastructure.Persistences.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("ProviderId");
 
                     b.ToTable("Products");
                 });
@@ -1151,6 +1158,10 @@ namespace POS.Infrastructure.Persistences.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__Products__Catego__4F7CD00D");
 
+                    b.HasOne("POS.Domain.Entities.Provider", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ProviderId");
+
                     b.Navigation("Category");
                 });
 
@@ -1198,8 +1209,9 @@ namespace POS.Infrastructure.Persistences.Migrations
             modelBuilder.Entity("POS.Domain.Entities.Purcharse", b =>
                 {
                     b.HasOne("POS.Domain.Entities.Provider", "Provider")
-                        .WithMany()
-                        .HasForeignKey("ProviderId");
+                        .WithMany("Purcharses")
+                        .HasForeignKey("ProviderId")
+                        .HasConstraintName("FK__Purcharse__Provi__5535A963");
 
                     b.HasOne("POS.Domain.Entities.User", "User")
                         .WithMany("Purcharses")
@@ -1352,6 +1364,13 @@ namespace POS.Infrastructure.Persistences.Migrations
             modelBuilder.Entity("POS.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductStocks");
+                });
+
+            modelBuilder.Entity("POS.Domain.Entities.Provider", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("Purcharses");
                 });
 
             modelBuilder.Entity("POS.Domain.Entities.Province", b =>

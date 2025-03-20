@@ -58,33 +58,6 @@ namespace POS.Application.Services
             return response;
         }
 
-        private static IQueryable<Provider> ApplyFilters(IQueryable<Provider> query, BaseFiltersRequest filters)
-        {
-            if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
-            {
-                query = filters.NumFilter switch
-                {
-                    1 => query.Where(x => x.Name!.Contains(filters.TextFilter)),
-                    2 => query.Where(x => x.Email!.Contains(filters.TextFilter)),
-                    3 => query.Where(x => x.DocumentNumber!.Contains(filters.TextFilter)),
-                    _ => query
-                };
-            }
-
-            if (filters.StateFilter is not null)
-            {
-                query = query.Where(x => x.State == filters.StateFilter);
-            }
-
-            if (!string.IsNullOrEmpty(filters.StartDate) && !string.IsNullOrEmpty(filters.EndDate) &&
-                DateTime.TryParse(filters.StartDate, out var startDate) && DateTime.TryParse(filters.EndDate, out var endDate))
-            {
-                query = query.Where(x => x.AuditCreateDate >= startDate && x.AuditCreateDate <= endDate.AddDays(1));
-            }
-
-            return query;
-        }
-
         public async Task<BaseResponse<ProviderByIdResponseDto>> GetProviderById(int providerId)
         {
             var response = new BaseResponse<ProviderByIdResponseDto>();
@@ -93,18 +66,16 @@ namespace POS.Application.Services
             {
                 var provider = await _unitOfWork.Provider.GetByIdAsync(providerId);
 
-                if (provider is not null)
-                {
-                    response.IsSuccess = true;
-                    response.Data = _mapper.Map<ProviderByIdResponseDto>(provider);
-                    response.Message = ReplyMessage.MESSAGE_QUERY;
-
-                }
-                else
+                if (provider is null)
                 {
                     response.IsSuccess = false;
                     response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                    return response;
                 }
+
+                response.IsSuccess = true;
+                response.Data = _mapper.Map<ProviderByIdResponseDto>(provider);
+                response.Message = ReplyMessage.MESSAGE_QUERY;
             }
             catch (Exception ex)
             {
@@ -224,6 +195,33 @@ namespace POS.Application.Services
             }
 
             return response;
+        }
+
+        private static IQueryable<Provider> ApplyFilters(IQueryable<Provider> query, BaseFiltersRequest filters)
+        {
+            if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
+            {
+                query = filters.NumFilter switch
+                {
+                    1 => query.Where(x => x.Name!.Contains(filters.TextFilter)),
+                    2 => query.Where(x => x.Email!.Contains(filters.TextFilter)),
+                    3 => query.Where(x => x.DocumentNumber!.Contains(filters.TextFilter)),
+                    _ => query
+                };
+            }
+
+            if (filters.StateFilter is not null)
+            {
+                query = query.Where(x => x.State == filters.StateFilter);
+            }
+
+            if (!string.IsNullOrEmpty(filters.StartDate) && !string.IsNullOrEmpty(filters.EndDate) &&
+                DateTime.TryParse(filters.StartDate, out var startDate) && DateTime.TryParse(filters.EndDate, out var endDate))
+            {
+                query = query.Where(x => x.AuditCreateDate >= startDate && x.AuditCreateDate <= endDate.AddDays(1));
+            }
+
+            return query;
         }
     }
 }

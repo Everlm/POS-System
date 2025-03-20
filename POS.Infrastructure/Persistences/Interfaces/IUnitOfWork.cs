@@ -1,15 +1,19 @@
 ﻿using POS.Domain.Entities;
+using System.Data;
 
 namespace POS.Infrastructure.Persistences.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-
         IGenericRepository<Category> Category { get; }
         IGenericRepository<Provider> Provider { get; }
         IGenericRepository<DocumentType> DocumentType { get; }
+        IGenericRepository<Product> Product { get; }
+        IProductStockRepository ProductStock { get; }
+        IWarehouseRepository Warehouse { get; }
         IUserRepository User { get; }
         void SaveChanges();
         Task SaveChangesAsync();
+        IDbTransaction BeginTransaction();
     }
 }

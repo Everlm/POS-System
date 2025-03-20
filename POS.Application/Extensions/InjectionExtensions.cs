@@ -22,9 +22,10 @@ namespace POS.Application.Extensions
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IProviderApplication, ProviderApplication>();
             services.AddScoped<IDocumentTypeApplication, DocumentTypeApplication>();
+            services.AddScoped<IWarehouseApplication, WarehouseApplication>();
+
             services.AddScoped<IAuthApplication, AuthApplication>();
             services.AddScoped<IGenerateExcelApplication, GenerateExcelApplication>();
-            
             services.AddTransient<IOrderingQuery, OrderingQuery>();
             services.AddTransient<IAzureStorage, AzureStorage>();
             services.AddWatchDog();

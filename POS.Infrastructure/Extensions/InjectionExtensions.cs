@@ -14,9 +14,9 @@ namespace POS.Infrastructure.Extensions
         {
             var assembly = typeof(POSContext).Assembly.FullName;
 
-            services.AddDbContext<POSContext>(
+           services.AddDbContext<POSContext>(
                 options => options.UseSqlServer(
-                    configuration.GetConnectionString("POSConnection")), ServiceLifetime.Scoped);
+                    configuration.GetConnectionString("POSConnection"), b => b.MigrationsAssembly(assembly)), ServiceLifetime.Scoped);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

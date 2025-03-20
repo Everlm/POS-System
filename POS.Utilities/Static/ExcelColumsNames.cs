@@ -48,6 +48,17 @@
             };
 
             return columnsProperties;
+        } 
+        public static List<(string ColumnsName, string PropertyName)> GetColumnsWarehouses()
+        {
+            var columnsProperties = new List<(string ColumnsName, string PropertyName)>
+            {
+                ("NOMBRE","Name"),
+                ("FECHA DE CREACION","AuditCreateDate"),
+                ("ESTADO","StateWarehouse")
+            };
+
+            return columnsProperties;
         }
     }
 }
