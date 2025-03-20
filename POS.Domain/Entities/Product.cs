@@ -6,6 +6,7 @@
         public string? Name { get; set; }
         public int StockMin { get; set; }
         public int StockMax { get; set; }
+        public decimal UnitSalePrice { get; set; }
         public string? Image { get; set; }
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
