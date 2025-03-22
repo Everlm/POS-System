@@ -128,6 +128,99 @@ namespace POS.Application.Services
             return response;
         }
 
+        public async Task<BaseResponse<bool>> UpdateProduct(ProductRequestDto requestDto, int productId)
+        {
+            var response = new BaseResponse<bool>();
+
+            try
+            {
+                var productUpdate = await GetProductById(productId);
+
+                if (productUpdate.Data is null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                    return response;
+                }
+
+                var product = _mapper.Map<Product>(requestDto);
+
+                if (requestDto.Image is not null)
+                {
+                    product.Image = await _fileLocalStorageApplication
+                        .UpdateFileAsync(requestDto.Image, LocalContainers.PRODUCTS, productUpdate.Data.Image!);
+                }
+
+                if (requestDto.Image is null)
+                {
+                    product.Image = productUpdate.Data.Image;
+                }
+
+                product.Id = productId;
+                response.Data = await _unitOfWork.Product.EditAsync(product);
+
+                if (response.Data)
+                {
+                    response.IsSuccess = true;
+                    response.Message = ReplyMessage.MESSAGE_UPDATE;
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_FAILED;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> DeleteProduct(int productId)
+        {
+            var response = new BaseResponse<bool>();
+
+            try
+            {
+                var productToUpdate = await GetProductById(productId);
+
+                if (productToUpdate.Data is null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                    return response;
+                }
+
+                response.Data = await _unitOfWork.Product.DeleteAsync(productId);
+
+                await _fileLocalStorageApplication.DeleteFileAsync(LocalContainers.PRODUCTS, productToUpdate.Data.Image!);
+
+                if (response.Data)
+                {
+                    response.IsSuccess = true;
+                    response.Message = ReplyMessage.MESSAGE_DELETE;
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.Message = ReplyMessage.MESSAGE_FAILED;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+            }
+
+            return response;
+        }
+
         private async Task RegisterProductStockByProduct(int productId)
         {
             //TODO: Validar cuando no hallan bodegas retornar un mensaje
@@ -173,6 +266,6 @@ namespace POS.Application.Services
             return query;
         }
 
-
+       
     }
 }

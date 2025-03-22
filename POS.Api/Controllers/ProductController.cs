@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Dtos.Product.Request;
-using POS.Application.Dtos.Warehouse.Request;
 using POS.Application.Interfaces;
-using POS.Application.Services;
 using POS.Utilities.Static;
 
 namespace POS.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -47,6 +47,20 @@ namespace POS.API.Controllers
         public async Task<IActionResult> RegisterProduct([FromForm] ProductRequestDto requestDto)
         {
             var response = await _productApplication.CreateProduct(requestDto);
+            return Ok(response);
+        }
+
+        [HttpPut("Edit/{productId:int}")]
+        public async Task<IActionResult> EditProduct([FromForm] ProductRequestDto requestDto, int productId)
+        {
+            var response = await _productApplication.UpdateProduct(requestDto, productId);
+            return Ok(response);
+        }
+
+        [HttpPut("Remove/{productId:int}")]
+        public async Task<IActionResult> RemoveProduct(int productId)
+        {
+            var response = await _productApplication.DeleteProduct(productId);
             return Ok(response);
         }
     }

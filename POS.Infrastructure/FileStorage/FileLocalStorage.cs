@@ -46,7 +46,7 @@ namespace POS.Infrastructure.FileStorage
             var fileName = Path.GetFileName(route);
             var directoryFile = Path.Combine(webRootPath, container, fileName);
 
-            if (Directory.Exists(directoryFile))
+            if (File.Exists(directoryFile))
             {
                 File.Delete(directoryFile);
             }
