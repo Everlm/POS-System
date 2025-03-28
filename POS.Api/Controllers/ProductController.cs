@@ -7,18 +7,20 @@ using POS.Utilities.Static;
 
 namespace POS.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
         private readonly IProductApplication _productApplication;
         private readonly IGenerateExcelApplication _generateExcelApplication;
+        private readonly IProductStockApplication _productStockApplication;
 
-        public ProductController(IProductApplication productApplication, IGenerateExcelApplication generateExcelApplication)
+        public ProductController(IProductApplication productApplication, IGenerateExcelApplication generateExcelApplication, IProductStockApplication productStockApplication)
         {
             _productApplication = productApplication;
             _generateExcelApplication = generateExcelApplication;
+            _productStockApplication = productStockApplication;
         }
 
         [HttpGet]
@@ -63,5 +65,13 @@ namespace POS.API.Controllers
             var response = await _productApplication.DeleteProduct(productId);
             return Ok(response);
         }
+
+        [HttpGet("productStockByWarehouse/{productId:int}")]
+        public async Task<IActionResult> GetProductStockByWarehouse(int productId)
+        {
+            var response = await _productStockApplication.GetProductStockByWarehouseAsync(productId);
+            return Ok(response);
+        }
+
     }
 }

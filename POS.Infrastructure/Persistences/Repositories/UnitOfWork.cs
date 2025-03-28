@@ -11,13 +11,13 @@ namespace POS.Infrastructure.Persistences.Repositories
     {
         private readonly POSContext _context;
 
-        public IUserRepository _user = null!;
-        public IGenericRepository<Category> _category = null!;
-        public IGenericRepository<Provider> _provider = null!;
-        public IGenericRepository<DocumentType> _documentType = null!;
-        public IGenericRepository<Product> _product = null!;
-        public IWarehouseRepository _warehouse = null!;
-        public IProductStockRepository _productStock = null!;
+        private IUserRepository _user = null!;
+        private IGenericRepository<Category> _category = null!;
+        private IGenericRepository<Provider> _provider = null!;
+        private IGenericRepository<DocumentType> _documentType = null!;
+        private IGenericRepository<Product> _product = null!;
+        private IWarehouseRepository _warehouse = null!;
+        private IProductStockRepository _productStock = null!;
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
