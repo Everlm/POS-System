@@ -1,0 +1,6 @@
+﻿@POS.API_HostAddress = https://localhost:7011
+
+GET {{POS.API_HostAddress}}/api/category/Select
+
+###
+

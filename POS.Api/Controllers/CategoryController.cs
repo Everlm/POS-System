@@ -7,7 +7,7 @@ using POS.Utilities.Static;
 
 namespace POS.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase

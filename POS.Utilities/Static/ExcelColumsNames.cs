@@ -76,5 +76,18 @@
 
             return columnsProperties;
         }
+
+        public static List<(string ColumnsName, string PropertyName)> GetColumnsPurchases()
+        {
+            var columnsProperties = new List<(string ColumnsName, string PropertyName)>
+            {
+                ("PROVEEDOR","Provider"),
+                ("ALMACEN","Warehouse"),
+                ("MONTO TOTAL","TotalAmout"),
+                ("FECHA DE COMPRA","DateOfPurchase")
+            };
+
+            return columnsProperties;
+        }
     }
 }

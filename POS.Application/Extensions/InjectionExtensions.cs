@@ -25,6 +25,7 @@ namespace POS.Application.Extensions
             services.AddScoped<IWarehouseApplication, WarehouseApplication>();
             services.AddScoped<IProductApplication, ProductApplication>();
             services.AddScoped<IProductStockApplication, ProductStockApplication>();
+            services.AddScoped<IPurcharseApplication, PurcharseApplication>();
             services.AddScoped<IAuthApplication, AuthApplication>();
 
             services.AddScoped<IGenerateExcelApplication, GenerateExcelApplication>();

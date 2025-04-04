@@ -1,0 +1,61 @@
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
+using POS.Application.Commons.Bases.Request;
+using POS.Application.Dtos.Product.Request;
+using POS.Application.Dtos.Purcharse.Request;
+using POS.Application.Interfaces;
+using POS.Application.Services;
+using POS.Utilities.Static;
+
+namespace POS.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PurcharseController : ControllerBase
+    {
+        private readonly IPurcharseApplication _purchaseApplication;
+        private readonly IGenerateExcelApplication _generateExcelApplication;
+
+        public PurcharseController(IPurcharseApplication purchaseApplication, IGenerateExcelApplication generateExcelApplication)
+        {
+            _purchaseApplication = purchaseApplication;
+            _generateExcelApplication = generateExcelApplication;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListPurchases([FromQuery] BaseFiltersRequest filters)
+        {
+            var response = await _purchaseApplication.ListPurcharses(filters);
+
+            if ((bool)filters.Download!)
+            {
+                var columnNames = ExcelColumsNames.GetColumnsPurchases();
+                var fileBytes = _generateExcelApplication.GenerateToExcel(response.Data!, columnNames);
+                return File(fileBytes, ContentType.ContentTypeExcel);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("{purcharseId:int}")]
+        public async Task<IActionResult> PurcharseById(int purcharseId)
+        {
+            var response = await _purchaseApplication.PurcharseById(purcharseId);
+            return Ok(response);
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterPurcharse([FromBody] PurcharseRequestDto requestDto)
+        {
+            var response = await _purchaseApplication.CreatePurcharse(requestDto);
+            return Ok(response);
+        }
+
+        [HttpPut("Cancel/{purcharseId:int}")]
+        public async Task<IActionResult> RegisterPurcharse(int purcharseId)
+        {
+            var response = await _purchaseApplication.CancelPurcharse(purcharseId);
+            return Ok(response);
+        }
+    }
+}

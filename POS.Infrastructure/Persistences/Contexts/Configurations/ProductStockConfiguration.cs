@@ -10,7 +10,7 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
         {
             builder.HasKey(x => new { x.ProductId, x.WarehouseId });
 
-            builder.Property(x => x.PurchasePrice)
+            builder.Property(x => x.PurcharsePrice)
                 .HasPrecision(precision: 10, scale: 2);
 
         }

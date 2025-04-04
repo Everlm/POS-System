@@ -13,14 +13,15 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
             builder.Property(e => e.Id)
                 .HasColumnName("PurcharseId");
 
-            builder.Property(e => e.Tax).HasColumnType("decimal(18, 2)");
+            builder.Property(e => e.SubTotal)
+                .HasColumnType("decimal(10, 2)");
+            
+            builder.Property(e => e.Tax)
+                .HasColumnType("decimal(10, 2)");
+            
+            builder.Property(e => e.TotalAmount)
+                .HasColumnType("decimal(10, 2)");
 
-            builder.Property(e => e.Total).HasColumnType("decimal(18, 2)");
-
-            builder.HasOne(d => d.User)
-                .WithMany(p => p.Purcharses)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Purcharse__UserI__5629CD9C");
         }
     }
 }

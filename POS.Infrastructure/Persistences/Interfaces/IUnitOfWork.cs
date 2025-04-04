@@ -9,6 +9,8 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IGenericRepository<Provider> Provider { get; }
         IGenericRepository<DocumentType> DocumentType { get; }
         IGenericRepository<Product> Product { get; }
+        IGenericRepository<Purcharse> Purcharse { get; }
+        IPurcharseDetailRepository PurcharseDetail { get; }
         IProductStockRepository ProductStock { get; }
         IWarehouseRepository Warehouse { get; }
         IUserRepository User { get; }

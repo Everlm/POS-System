@@ -233,7 +233,7 @@ namespace POS.Application.Services
                     ProductId = productId,
                     WarehouseId = warehouse.Id,
                     CurrentStock = 0,
-                    PurchasePrice = 0
+                    PurcharsePrice = 0
                 };
 
                 await _unitOfWork.ProductStock.RegisterProductStockAsync(newProductStock);
