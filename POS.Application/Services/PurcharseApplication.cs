@@ -31,33 +31,34 @@ namespace POS.Application.Services
         {
             var response = new BaseResponse<IEnumerable<PurcharseResponseDto>>();
 
-            try
-            {
-                var purcharseQueryable = _unitOfWork.Purcharse
+            //try
+            //{
+
+            var purcharseQueryable = _unitOfWork.Purcharse
                     .GetAllQueryable()
                     .Include(x => x.Provider)
                     .Include(x => x.Warehouse)
                     .AsQueryable();
 
-                var purcharsesFiltered = ApplyFilters(purcharseQueryable, filters);
-                filters.Sort ??= "Id";
+            var purcharsesFiltered = ApplyFilters(purcharseQueryable, filters);
+            filters.Sort ??= "Id";
 
-                var items = await _orderingQuery
-                    .Ordering(filters, purcharsesFiltered, !(bool)filters.Download!)
-                    .ToListAsync();
+            var items = await _orderingQuery
+                .Ordering(filters, purcharsesFiltered, !(bool)filters.Download!)
+                .ToListAsync();
 
-                response.IsSuccess = true;
-                response.Data = _mapper.Map<IEnumerable<PurcharseResponseDto>>(items);
-                response.TotalRecords = await purcharsesFiltered.CountAsync();
-                response.Message = ReplyMessage.MESSAGE_QUERY;
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<IEnumerable<PurcharseResponseDto>>(items);
+            response.TotalRecords = await purcharsesFiltered.CountAsync();
+            response.Message = ReplyMessage.MESSAGE_QUERY;
 
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.IsSuccess = false;
+            //    response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+            //    WatchLogger.Log(ex.Message);
+            //}
 
             return response;
         }

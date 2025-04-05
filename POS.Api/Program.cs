@@ -1,4 +1,5 @@
 using POS.API.Extensions;
+using POS.API.Middlewares;
 using POS.Application.Extensions;
 using POS.Infrastructure.Extensions;
 using POS.Utilities.AppSettings;
@@ -34,6 +35,9 @@ var app = builder.Build();
 
 app.UseCors(Cors);
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
+
+
 //if (app.Environment.IsDevelopment())
 //{
 //    app.UseSwagger();
@@ -41,8 +45,8 @@ app.UseCors(Cors);
 //}
 
 app.UseSwagger();
-app.UseSwaggerUI();
 
+app.UseSwaggerUI();
 
 app.UseWatchDogExceptionLogger();
 
