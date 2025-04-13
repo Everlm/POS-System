@@ -1,5 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using POS.API.CustomAttribute;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Dtos.Product.Request;
 using POS.Application.Dtos.Purcharse.Request;
@@ -23,6 +25,8 @@ namespace POS.API.Controllers
         }
 
         [HttpGet]
+        //[ApiKey]
+        [Authorize(Policy = "ApiKeyPolicy")]
         public async Task<IActionResult> ListPurchases([FromQuery] BaseFiltersRequest filters)
         {
             var response = await _purchaseApplication.ListPurcharses(filters);

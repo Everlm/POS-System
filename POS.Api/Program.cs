@@ -1,3 +1,7 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.Authorization;
+using POS.API.Authentication;
+using POS.API.CustomAttribute;
 using POS.API.Extensions;
 using POS.API.Middlewares;
 using POS.Application.Extensions;
@@ -13,12 +17,16 @@ builder.Services.AddInjectionInfrastructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
 builder.Services.AddAuthentication(Configuration);
 
+builder.Services.AddScoped<IAuthorizationHandler, ApiKeyHandler>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 builder.Services.Configure<AppSettings>(Configuration.GetSection("GoogleSettings"));
-
+builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
+builder.Services.AddScoped<ApiKeyAuthFilter>();
 builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddCors(options =>
 {
@@ -35,18 +43,19 @@ var app = builder.Build();
 
 app.UseCors(Cors);
 
+app.UseMiddleware<ApiKeyMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseSwagger();
+//app.UseSwagger();
 
-app.UseSwaggerUI();
+//app.UseSwaggerUI();
 
 app.UseWatchDogExceptionLogger();
 

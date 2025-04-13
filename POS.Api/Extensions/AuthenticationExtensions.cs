@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using POS.API.Authentication;
 using System.Text;
 
 namespace POS.API.Extensions
@@ -22,6 +23,15 @@ namespace POS.API.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiKeyPolicy", policy =>
+                {
+                    policy.AddAuthenticationSchemes(new[] { JwtBearerDefaults.AuthenticationScheme });
+                    policy.Requirements.Add(new ApiKeyRequirement());
+                });
+            });
 
             return services;
         }

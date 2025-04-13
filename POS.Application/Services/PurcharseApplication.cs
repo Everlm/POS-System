@@ -43,9 +43,13 @@ namespace POS.Application.Services
             var purcharsesFiltered = ApplyFilters(purcharseQueryable, filters);
             filters.Sort ??= "Id";
 
+            var sql = purcharsesFiltered.ToQueryString();
+            Console.WriteLine(sql);
+
             var items = await _orderingQuery
                 .Ordering(filters, purcharsesFiltered, !(bool)filters.Download!)
                 .ToListAsync();
+
 
             response.IsSuccess = true;
             response.Data = _mapper.Map<IEnumerable<PurcharseResponseDto>>(items);
