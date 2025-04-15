@@ -88,6 +88,22 @@
             };
 
             return columnsProperties;
+        } 
+        public static List<(string ColumnsName, string PropertyName)> GetColumnsClients()
+        {
+            var columnsProperties = new List<(string ColumnsName, string PropertyName)>
+            {
+                ("TIPO DE DOCUMENTO","DocumentType"),
+                ("NUMERO DE DOCUMENTO","DocumentNumber"),
+                ("NOMBRE","Name"),
+                ("DIRECCION","Address"),
+                ("TELEFONO","Phone"),
+                ("CORREO","Email"),
+                ("ESTADO","StateClient"),
+                ("FECHA DE CREACION","AuditCreateDate")
+            };
+
+            return columnsProperties;
         }
     }
 }

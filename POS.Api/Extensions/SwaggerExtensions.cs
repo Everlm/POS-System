@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace POS.API.Extensions
 {
@@ -7,6 +8,7 @@ namespace POS.API.Extensions
     {
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
+
             var openApi = new OpenApiInfo
             {
                 Title = "POS System",
@@ -29,6 +31,10 @@ namespace POS.API.Extensions
 
             services.AddSwaggerGen(x =>
             {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                x.IncludeXmlComments(xmlPath);
+
                 openApi.Version = "v1";
                 x.SwaggerDoc("v1", openApi);
 
@@ -53,6 +59,8 @@ namespace POS.API.Extensions
                 {
                     {securityScheme, new string[] {} }
                 });
+
+               
             });
 
             return services;

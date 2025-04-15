@@ -4,6 +4,9 @@ using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Filters;
 using POS.Application.Commons.Ordering;
+using POS.Application.Commons.Select.Response;
+using POS.Application.Dtos.Category.Response;
+using POS.Application.Dtos.Client.Request;
 using POS.Application.Dtos.Client.Response;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;
@@ -59,5 +62,128 @@ namespace POS.Application.Services
 
             return response;
         }
+
+        public async Task<BaseResponse<IEnumerable<SelectResponse>>> ListSelectClient()
+        {
+            var response = new BaseResponse<IEnumerable<SelectResponse>>();
+            var clients = await _unitOfWork.Client.GetAllAsync();
+
+            if (clients is not null)
+            {
+                response.IsSuccess = true;
+                response.Data = _mapper.Map<IEnumerable<SelectResponse>>(clients);
+                response.TotalRecords = clients.Count();
+                response.Message = ReplyMessage.MESSAGE_QUERY;
+
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<ClientResponseDto>> GetClientById(int clientId)
+        {
+            var response = new BaseResponse<ClientResponseDto>();
+
+            var client = await _unitOfWork.Client.GetByIdAsync(clientId);
+
+            if (client is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<ClientResponseDto>(client);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> CreateClient(ClientRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+
+            var client = _mapper.Map<Client>(requestDto);
+            response.Data = await _unitOfWork.Client.RegisterAsync(client);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message += ReplyMessage.MESSAGE_SAVE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> UpdateClient(ClientRequestDto requestDto, int clientId)
+        {
+            var response = new BaseResponse<bool>();
+
+            var clientToUpdate = await GetClientById(clientId);
+
+            if (clientToUpdate.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var client = _mapper.Map<Client>(requestDto);
+            client.Id = clientId;
+            response.Data = await _unitOfWork.Client.EditAsync(client);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_UPDATE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> DeleteClient(int clientId)
+        {
+            var response = new BaseResponse<bool>();
+
+            var clientTodelete = await GetClientById(clientId);
+
+            if (clientTodelete.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.Data = await _unitOfWork.Client.DeleteAsync(clientId);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_DELETE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
     }
 }
