@@ -1216,9 +1216,8 @@ namespace POS.Infrastructure.Persistences.Migrations
             modelBuilder.Entity("POS.Domain.Entities.Sale", b =>
                 {
                     b.HasOne("POS.Domain.Entities.Client", "Client")
-                        .WithMany("Sales")
-                        .HasForeignKey("ClientId")
-                        .HasConstraintName("FK__Sales__ClientId__59063A47");
+                        .WithMany()
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("POS.Domain.Entities.User", "User")
                         .WithMany("Sales")
@@ -1304,11 +1303,6 @@ namespace POS.Infrastructure.Persistences.Migrations
             modelBuilder.Entity("POS.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("POS.Domain.Entities.Client", b =>
-                {
-                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("POS.Domain.Entities.Department", b =>

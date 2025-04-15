@@ -43,7 +43,7 @@ var app = builder.Build();
 
 app.UseCors(Cors);
 
-app.UseMiddleware<ApiKeyMiddleware>();
+// app.UseMiddleware<ApiKeyMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using POS.Application.Commons.Filters;
 using POS.Application.Commons.Ordering;
 using POS.Application.Extensions.WatchDog;
 using POS.Application.Interfaces;
@@ -26,10 +27,12 @@ namespace POS.Application.Extensions
             services.AddScoped<IProductApplication, ProductApplication>();
             services.AddScoped<IProductStockApplication, ProductStockApplication>();
             services.AddScoped<IPurcharseApplication, PurcharseApplication>();
+            services.AddScoped<IClientApplication, ClientApplication>();
             services.AddScoped<IAuthApplication, AuthApplication>();
 
             services.AddScoped<IGenerateExcelApplication, GenerateExcelApplication>();
             services.AddTransient<IOrderingQuery, OrderingQuery>();
+            services.AddTransient<IFilterService, FilterService>();
             services.AddTransient<IAzureStorage, AzureStorage>();
             services.AddTransient<IFileLocalStorageApplication, FileLocalStorageApplication>();
             services.AddWatchDog();
