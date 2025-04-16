@@ -1,20 +1,20 @@
 ﻿namespace POS.Domain.Entities
 {
-    public partial class Sale :BaseEntity
+    public partial class Sale : BaseEntity
     {
-        public Sale()
-        {
-            SaleDetails = new HashSet<SaleDetail>();
-        }
-
-        public int? ClientId { get; set; }
-        public int? UserId { get; set; }
-        public DateTime? SaleDate { get; set; }
-        public decimal? Tax { get; set; }
-        public decimal? Total { get; set; }
-       
-        public virtual Client? Client { get; set; }
-        public virtual User? User { get; set; }
-        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        public int ClientId { get; set; }
+        public int VoucherDocumentTypeId { get; set; }
+        public int WarehouseId { get; set; }
+        public string VoucherNumber { get; set; } = null!;
+        public string? Observation { get; set; } 
+        public decimal SubTotal { get; set; }
+        public decimal Tax { get; set; }
+        public decimal TotalAmout { get; set; }
+        
+        public virtual ICollection<SaleDetail> SaleDetails { get; set; } = null!;
+        public virtual VoucherDoumentType VoucherDoumentType { get; set; } = null!;
+        public virtual Warehouse Warehouse { get; set; } = null!;
+        public virtual Client Client { get; set; } = null!;
+      
     }
 }

@@ -104,6 +104,16 @@
             };
 
             return columnsProperties;
+        } 
+        
+        public static List<(string ColumnsName, string PropertyName)> GetColumnsSale()
+        {
+            var columnsProperties = new List<(string ColumnsName, string PropertyName)>
+            {
+                ("FECHA DE CREACION","AuditCreateDate")
+            };
+
+            return columnsProperties;
         }
     }
 }

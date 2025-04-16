@@ -9,7 +9,6 @@ using POS.Domain.Entities;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.UnitTest.MockData;
 using Xunit;
-using Moq.EntityFrameworkCore;
 
 namespace PPOS.UnitTest.CategoryApplicationTest
 {
@@ -126,6 +125,11 @@ namespace PPOS.UnitTest.CategoryApplicationTest
         {
             // Arrange
             var categoryId = 1;
+
+            var existingCategory = CategoryMockData.GetSampleCategory(categoryId);
+
+            _unitOfWorkMock.Setup(u => u.Category.GetByIdAsync(categoryId))
+                .ReturnsAsync(existingCategory);
 
             _unitOfWorkMock.Setup(u => u.Category.DeleteAsync(categoryId))
                 .ReturnsAsync(true);

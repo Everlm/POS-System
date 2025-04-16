@@ -13,14 +13,19 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
             builder.Property(e => e.Id)
                 .HasColumnName("SaleId");
 
-            builder.Property(e => e.Tax).HasColumnType("decimal(18, 2)");
+            builder.Property(e => e.VoucherNumber)
+                .HasMaxLength(30)
+                .IsUnicode(false);
 
-            builder.Property(e => e.Total).HasColumnType("decimal(18, 2)");
+            builder.Property(e => e.SubTotal)
+                .HasColumnType("decimal(10,2)"); 
+            
+            builder.Property(e => e.TotalAmout)
+                .HasColumnType("decimal(10,2)");
 
-            builder.HasOne(d => d.User)
-                .WithMany(p => p.Sales)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Sales__UserId__59FA5E80");
+            builder.Property(e => e.Tax)
+                .HasColumnType("decimal(10, 2)");
+
         }
     }
 }

@@ -4,7 +4,6 @@
     {
         public User()
         {
-            Sales = new HashSet<Sale>();
             UserRoles = new HashSet<UserRole>();
             UsersBranchOffices = new HashSet<UsersBranchOffice>();
         }
@@ -14,7 +13,6 @@
         public string? Email { get; set; }
         public string? Image { get; set; }
         public string? AuthType { get; set; }
-        public virtual ICollection<Sale> Sales { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<UsersBranchOffice> UsersBranchOffices { get; set; }
     }

@@ -32,7 +32,7 @@ public class ClientController : ControllerBase
 
         if ((bool)filters.Download!)
         {
-            var columnNames = ExcelColumsNames.GetColumnsCategories();
+            var columnNames = ExcelColumsNames.GetColumnsClients();
             var fileBytes = _generateExcelApplication.GenerateToExcel(response.Data!, columnNames);
             return File(fileBytes, ContentType.ContentTypeExcel);
         }
