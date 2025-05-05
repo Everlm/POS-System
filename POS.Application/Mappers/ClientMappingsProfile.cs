@@ -13,7 +13,7 @@ public class ClientMappingsProfile : Profile
     {
         CreateMap<Client, ClientResponseDto>()
                 .ForMember(x => x.ClientId, x => x.MapFrom(y => y.Id))
-                .ForMember(x => x.DocumentType, x => x.MapFrom(y => y.DocumentType.Name))
+                .ForMember(x => x.DocumentType, x => x.MapFrom(y => y.DocumentType.Abbreviation))
                 .ForMember(x => x.StateClient, x => x.MapFrom(y => y.State.Equals((int)StateTypes.Active) ? "Active" : "Inactive"))
                 .ReverseMap();
 

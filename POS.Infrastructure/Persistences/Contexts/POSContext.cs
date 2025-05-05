@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using POS.Domain.Entities;
+using System.Reflection;
 
 namespace POS.Infrastructure.Persistences.Contexts
 {

@@ -8,7 +8,6 @@
             Providers = new HashSet<Provider>();
         }
 
-        public int DocumentTypeId { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
         public string? Abbreviation { get; set; }

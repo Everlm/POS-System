@@ -425,10 +425,6 @@ namespace POS.Infrastructure.Persistences.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<int>("DocumentTypeId")
-                        .HasColumnType("int")
-                        .HasColumnName("DocumentTypeId1");
-
                     b.Property<string>("Name")
                         .HasMaxLength(255)
                         .IsUnicode(false)
