@@ -7,5 +7,6 @@ namespace POS.Application.Interfaces
     public interface ISaleApplication
     {
         Task<BaseResponse<IEnumerable<SaleResponseDto>>> ListSale(BaseFiltersRequest filters);
+        Task<BaseResponse<SaleByIdResponseDto>> GetSaleById(int saleId);
     }
 }

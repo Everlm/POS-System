@@ -110,7 +110,12 @@
         {
             var columnsProperties = new List<(string ColumnsName, string PropertyName)>
             {
-                ("FECHA DE CREACION","AuditCreateDate")
+                ("Comprobante","VoucherDescription"),
+                ("Numero comprobante","VoucherNumber"),
+                ("Fecha","AuditCreateDate"),
+                ("Bodega","Warehouse"),
+                ("Observacion","Observation"),
+                ("Monto total","TotalAmout")
             };
 
             return columnsProperties;

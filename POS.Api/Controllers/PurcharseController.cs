@@ -11,6 +11,7 @@ using POS.Utilities.Static;
 
 namespace POS.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PurcharseController : ControllerBase

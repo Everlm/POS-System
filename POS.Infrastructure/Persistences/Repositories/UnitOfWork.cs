@@ -22,6 +22,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         private IWarehouseRepository _warehouse = null!;
         private IProductStockRepository _productStock = null!;
         private IPurcharseDetailRepository _purcharseDetail = null!;
+        private ISaleDetailRepository _saleDetail = null!;
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
@@ -39,6 +40,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IWarehouseRepository Warehouse => _warehouse ?? new WarehouseRepository(_context);
         public IProductStockRepository ProductStock => _productStock ?? new ProductStockRepository(_context);
         public IPurcharseDetailRepository PurcharseDetail => _purcharseDetail ?? new PurcharseDetailRepository(_context);
+        public ISaleDetailRepository SaleDetail => _saleDetail ?? new SaleDetailRepository(_context);
 
 
 

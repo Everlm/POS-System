@@ -85,9 +85,9 @@ namespace POS.Application.Services
             return response;
         }
 
-        public async Task<BaseResponse<ClientResponseDto>> GetClientById(int clientId)
+        public async Task<BaseResponse<ClientByIdResponseDto>> GetClientById(int clientId)
         {
-            var response = new BaseResponse<ClientResponseDto>();
+            var response = new BaseResponse<ClientByIdResponseDto>();
 
             var client = await _unitOfWork.Client.GetByIdAsync(clientId);
 
@@ -99,7 +99,7 @@ namespace POS.Application.Services
             }
 
             response.IsSuccess = true;
-            response.Data = _mapper.Map<ClientResponseDto>(client);
+            response.Data = _mapper.Map<ClientByIdResponseDto>(client);
             response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }

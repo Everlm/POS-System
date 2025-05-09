@@ -17,6 +17,10 @@ public class ClientMappingsProfile : Profile
                 .ForMember(x => x.StateClient, x => x.MapFrom(y => y.State.Equals((int)StateTypes.Active) ? "Active" : "Inactive"))
                 .ReverseMap();
 
+        CreateMap<Client, ClientByIdResponseDto>()
+               .ForMember(x => x.ClientId, x => x.MapFrom(y => y.Id))
+               .ReverseMap();
+
         CreateMap<ClientRequestDto, Client>();
 
         CreateMap<Client, SelectResponse>()

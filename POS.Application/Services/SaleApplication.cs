@@ -4,7 +4,6 @@ using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Filters;
 using POS.Application.Commons.Ordering;
-using POS.Application.Dtos.Client.Response;
 using POS.Application.Dtos.Sale.Response;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;
@@ -28,6 +27,8 @@ namespace POS.Application.Services
             _orderingQuery = orderingQuery;
             _filterService = filterService;
         }
+
+
 
         public async Task<BaseResponse<IEnumerable<SaleResponseDto>>> ListSale(BaseFiltersRequest filters)
         {
@@ -58,6 +59,31 @@ namespace POS.Application.Services
             response.Message = ReplyMessage.MESSAGE_QUERY;
 
             return response;
+        }
+
+        public async Task<BaseResponse<SaleByIdResponseDto>> GetSaleById(int saleId)
+        {
+            var response = new BaseResponse<SaleByIdResponseDto>();
+
+            var sale = await _unitOfWork.Sale.GetByIdAsync(saleId);
+
+            if (sale is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var saleDetails = await _unitOfWork.SaleDetail
+                .GetSaleDetailBySaleId(sale.Id);
+
+            sale.SaleDetails = saleDetails.ToList();
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<SaleByIdResponseDto>(sale);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+
         }
     }
 }

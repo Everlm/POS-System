@@ -10,7 +10,7 @@ namespace POS.Application.Interfaces
     {
         Task<BaseResponse<IEnumerable<ClientResponseDto>>> ListClient(BaseFiltersRequest filters);
         Task<BaseResponse<IEnumerable<SelectResponse>>> ListSelectClient();
-        Task<BaseResponse<ClientResponseDto>> GetClientById(int clientId);
+        Task<BaseResponse<ClientByIdResponseDto>> GetClientById(int clientId);
         Task<BaseResponse<bool>> CreateClient(ClientRequestDto requestDto);
         Task<BaseResponse<bool>> UpdateClient(ClientRequestDto requestDto, int clientId);
         Task<BaseResponse<bool>> DeleteClient(int clientId);

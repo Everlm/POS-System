@@ -22,8 +22,4 @@
     <ProjectReference Include="..\POS.Utilities\POS.Utilities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Sale\Request\" />
-  </ItemGroup>
-
 </Project>
