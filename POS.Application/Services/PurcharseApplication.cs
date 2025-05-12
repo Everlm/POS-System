@@ -31,9 +31,6 @@ namespace POS.Application.Services
         {
             var response = new BaseResponse<IEnumerable<PurcharseResponseDto>>();
 
-            //try
-            //{
-
             var purcharseQueryable = _unitOfWork.Purcharse
                     .GetAllQueryable()
                     .Include(x => x.Provider)
@@ -50,20 +47,10 @@ namespace POS.Application.Services
                 .Ordering(filters, purcharsesFiltered, !(bool)filters.Download!)
                 .ToListAsync();
 
-
             response.IsSuccess = true;
             response.Data = _mapper.Map<IEnumerable<PurcharseResponseDto>>(items);
             response.TotalRecords = await purcharsesFiltered.CountAsync();
             response.Message = ReplyMessage.MESSAGE_QUERY;
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    response.IsSuccess = false;
-            //    response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-            //    WatchLogger.Log(ex.Message);
-            //}
-
             return response;
         }
 

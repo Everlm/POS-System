@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using POS.Application.Commons.Select.Response;
 using POS.Application.Dtos.Provider.Request;
 using POS.Application.Dtos.Provider.Response;
 using POS.Domain.Entities;
@@ -21,6 +22,10 @@ namespace POS.Application.Mappers
                 .ReverseMap();
 
             CreateMap<ProviderRequestDto, Provider>();
+
+            CreateMap<Provider, SelectResponse>()
+               .ForMember(x => x.Description, x => x.MapFrom(y => y.Name))
+               .ReverseMap();
         }
     }
 }

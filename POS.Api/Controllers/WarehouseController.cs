@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Dtos.Warehouse.Request;
 using POS.Application.Interfaces;
+using POS.Application.Services;
 using POS.Utilities.Static;
 
 namespace POS.API.Controllers
@@ -33,6 +34,13 @@ namespace POS.API.Controllers
                 return File(fileBytes, ContentType.ContentTypeExcel);
             }
 
+            return Ok(response);
+        }
+
+        [HttpGet("Select")]
+        public async Task<IActionResult> ListSelectWarehouse()
+        {
+            var response = await _warehouseApplication.GetSelectWarehouse();
             return Ok(response);
         }
 

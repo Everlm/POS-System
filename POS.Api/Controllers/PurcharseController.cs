@@ -26,8 +26,8 @@ namespace POS.API.Controllers
         }
 
         [HttpGet]
-        //[ApiKey]
-        [Authorize(Policy = "ApiKeyPolicy")]
+        //[ApiKey] Ejemplo apikey
+        //[Authorize(Policy = "ApiKeyPolicy")] Ejemplo de autorizacion por policy
         public async Task<IActionResult> ListPurchases([FromQuery] BaseFiltersRequest filters)
         {
             var response = await _purchaseApplication.ListPurcharses(filters);

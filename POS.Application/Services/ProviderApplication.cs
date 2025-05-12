@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Ordering;
-using POS.Application.Dtos.Category.Response;
+using POS.Application.Commons.Select.Response;
+using POS.Application.Dtos.DocumentType.Response;
 using POS.Application.Dtos.Provider.Request;
 using POS.Application.Dtos.Provider.Response;
 using POS.Application.Interfaces;
@@ -55,6 +56,25 @@ namespace POS.Application.Services
                 WatchLogger.Log(ex.Message);
             }
 
+            return response;
+        }
+
+        public async Task<BaseResponse<IEnumerable<SelectResponse>>> GetAllProviders()
+        {
+            var response = new BaseResponse<IEnumerable<SelectResponse>>();
+
+            var providers = await _unitOfWork.Provider.GetSelectAsync();
+
+            if (providers is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<IEnumerable<SelectResponse>>(providers);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }
 
@@ -223,5 +243,7 @@ namespace POS.Application.Services
 
             return query;
         }
+
+
     }
 }

@@ -15,7 +15,7 @@ namespace POS.API.Controllers
     {
         private readonly IProviderApplication _providerApplication;
         private readonly IGenerateExcelApplication _generateExcelApplication;
-        
+
         public ProviderController(IProviderApplication providerApplication, IGenerateExcelApplication generateExcelApplication)
         {
             _providerApplication = providerApplication;
@@ -34,6 +34,13 @@ namespace POS.API.Controllers
                 return File(fileBytes, ContentType.ContentTypeExcel);
             }
 
+            return Ok(response);
+        }
+
+        [HttpGet("Select")]
+        public async Task<IActionResult> ListSelectProviders()
+        {
+            var response = await _providerApplication.GetAllProviders();
             return Ok(response);
         }
 

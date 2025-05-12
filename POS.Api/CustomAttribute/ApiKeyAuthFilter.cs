@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.VisualBasic;
 using POS.API.Authentication;
 using POS.Utilities.Static;
 
