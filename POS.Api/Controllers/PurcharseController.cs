@@ -49,15 +49,15 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> RegisterPurcharse([FromBody] PurcharseRequestDto requestDto)
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreatePurcharse([FromBody] PurcharseRequestDto requestDto)
         {
             var response = await _purchaseApplication.CreatePurcharse(requestDto);
             return Ok(response);
         }
 
         [HttpPut("Cancel/{purcharseId:int}")]
-        public async Task<IActionResult> RegisterPurcharse(int purcharseId)
+        public async Task<IActionResult> CancelPurcharse(int purcharseId)
         {
             var response = await _purchaseApplication.CancelPurcharse(purcharseId);
             return Ok(response);
