@@ -162,11 +162,11 @@ namespace POS.Application.Services
 
                 response.Data = await _unitOfWork.Purcharse.DeleteAsync(purcharseId);
 
-                var productsId = purcharse.Data.PurcharseDetailsById.Select(x => x.ProductId).ToList();
+                var productsId = purcharse.Data.PurchaseDetail.Select(x => x.ProductId).ToList();
 
                 var products = await _unitOfWork.ProductStock.GetProductStockByProduct(productsId, purcharse.Data.WarehouseId);
 
-                foreach (var item in purcharse.Data.PurcharseDetailsById)
+                foreach (var item in purcharse.Data.PurchaseDetail)
                 {
                     var product = products.FirstOrDefault(x => x.ProductId == item.ProductId);
 

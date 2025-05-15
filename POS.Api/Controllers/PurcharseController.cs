@@ -1,12 +1,8 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using POS.API.CustomAttribute;
 using POS.Application.Commons.Bases.Request;
-using POS.Application.Dtos.Product.Request;
 using POS.Application.Dtos.Purcharse.Request;
 using POS.Application.Interfaces;
-using POS.Application.Services;
 using POS.Utilities.Static;
 
 namespace POS.API.Controllers

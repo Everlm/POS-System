@@ -10,6 +10,6 @@
         public decimal TotalAmount { get; set; }
         public decimal Tax { get; set; }
 
-        public ICollection<PurcharseDetailByIdResponseDto> PurcharseDetailsById { get; set; } = null!;
+        public ICollection<PurcharseDetailByIdResponseDto> PurchaseDetail { get; set; } = null!;
     }
 }

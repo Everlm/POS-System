@@ -18,7 +18,7 @@ namespace POS.Application.Mappers
 
             CreateMap<Purcharse, PurcharseByIdResponseDto>()
                 .ForMember(x => x.PurchaseId, x => x.MapFrom(y => y.Id))
-                .ForMember(x => x.PurcharseDetailsById, x => x.MapFrom(y => y.PurcharseDetails))
+                .ForMember(x => x.PurchaseDetail, x => x.MapFrom(y => y.PurcharseDetails))
                 .ReverseMap();
 
             CreateMap<PurcharseDetail, PurcharseDetailByIdResponseDto>()
@@ -27,6 +27,7 @@ namespace POS.Application.Mappers
                .ForMember(x => x.Code, x => x.MapFrom(y => y.Product.Code))
                .ForMember(x => x.Name, x => x.MapFrom(y => y.Product.Name))
                .ForMember(x => x.TotalAmount, x => x.MapFrom(y => y.Total))
+               .ForMember(x => x.UnitPurchasePrice, x => x.MapFrom(y => y.UnitPurcharsePrice))
                .ReverseMap();
 
             CreateMap<PurcharseRequestDto, Purcharse>();
