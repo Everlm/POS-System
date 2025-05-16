@@ -16,6 +16,7 @@
         public const string MESSAGE_EXCEPTION = "Error, contact the administrator (Admin@gmail.com)";
         public const string MESSAGE_AUTHGOOGLE_ERROR = "Su cuenta no se encuentra registrada en el sistema";
         public const string MESSAGE_AUTHTYPE_ERROR = "Por favor intente iniciar sesion por otro medio";
+        public const string MESSAGE_SALE_CANCEL = "La venta ha sido cancelada";
 
     }
 }

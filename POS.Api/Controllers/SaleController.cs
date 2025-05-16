@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
+using POS.Application.Dtos.Sale.Request;
 using POS.Application.Interfaces;
 using POS.Utilities.Static;
 
 namespace POS.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SaleController : ControllerBase
@@ -34,5 +34,35 @@ namespace POS.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("ProductStockByWarehouse")]
+        public async Task<IActionResult> GetProductStockByWarehouseId([FromQuery] BaseFiltersRequest filters)
+        {
+            var response = await _saleApplication.GetProductStockByWarehouse(filters);
+            return Ok(response);
+        }
+
+        [HttpGet("{saleId:int}")]
+        public async Task<IActionResult> SaleById(int saleId)
+        {
+            var response = await _saleApplication.GetSaleById(saleId);
+            return Ok(response);
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateSale([FromBody] SaleRequestDto requestDto)
+        {
+            var response = await _saleApplication.CreateSale(requestDto);
+            return Ok(response);
+        }
+
+        [HttpPut("Cancel/{saleId:int}")]
+        public async Task<IActionResult> CancelPurcharse(int saleId)
+        {
+            var response = await _saleApplication.CancelSale(saleId);
+            return Ok(response);
+        }
+
+
     }
 }

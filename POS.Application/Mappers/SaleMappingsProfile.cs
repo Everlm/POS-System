@@ -13,14 +13,15 @@ namespace POS.Application.Mappers
                .ForMember(x => x.SaleId, x => x.MapFrom(y => y.Id))
                .ForMember(x => x.VoucherDescription, x => x.MapFrom(y => y.VoucherDoumentType.Description))
                .ForMember(x => x.Warehouse, x => x.MapFrom(y => y.Warehouse.Name))
-               .ForMember(x => x.Client, x => x.MapFrom(y => y.Client.Name))              
-               .ForMember(x => x.DateOfSale, x => x.MapFrom(y => y.AuditCreateDate))              
+               .ForMember(x => x.Client, x => x.MapFrom(y => y.Client.Name))
+               .ForMember(x => x.DateOfSale, x => x.MapFrom(y => y.AuditCreateDate))
                .ReverseMap();
 
             CreateMap<Sale, SaleByIdResponseDto>()
                 .ForMember(x => x.SaleId, x => x.MapFrom(y => y.Id))
                 .ForMember(x => x.DateOfSale, x => x.MapFrom(y => y.AuditCreateDate))
                 .ForMember(x => x.CustomerId, x => x.MapFrom(y => y.ClientId))
+                .ForMember(x => x.SaleDetail, x => x.MapFrom(y => y.SaleDetails))
                 .ReverseMap();
 
             CreateMap<SaleDetail, SaleDetailByIdResponseDto>()
@@ -43,6 +44,7 @@ namespace POS.Application.Mappers
 
             CreateMap<SaleRequestDto, Sale>()
                  .ForMember(x => x.ClientId, x => x.MapFrom(y => y.CustomerId))
+                 .ForMember(x => x.SaleDetails, x => x.MapFrom(y => y.SaleDetail))
                  .ReverseMap();
 
             CreateMap<SaleDetailRequestDto, SaleDetail>();

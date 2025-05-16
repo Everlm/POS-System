@@ -14,6 +14,38 @@ public class SaleDetailRepository : ISaleDetailRepository
         _context = context;
     }
 
+    public IQueryable<Product> GetProductStockByWarehouse(int warehouseId)
+    {
+        var products = _context.Products
+            .Where(p => _context.ProductStock
+            .Any(ps => ps.ProductId == p.Id && ps.WarehouseId == warehouseId && ps.CurrentStock > 0))
+            .Select(p => new Product
+            {
+                Id = p.Id,
+                Image = p.Image,
+                Code = p.Code,
+                Name = p.Name,
+                Category = new Category { Name = p.Category.Name },
+                UnitSalePrice = p.UnitSalePrice,
+                ProductStocks = new List<ProductStock>
+                {
+                        new ProductStock
+                        {
+                            CurrentStock = _context.ProductStock
+                                .Where(ps => ps.ProductId == p.Id && ps.WarehouseId == warehouseId && ps.CurrentStock > 0)
+                                .Select(ps => ps.CurrentStock)
+                                .FirstOrDefault()
+                        }
+                }
+            }).AsQueryable();
+
+
+        //Revisar la consulta que construye EF
+        var sql = products.ToQueryString();
+        Console.WriteLine(sql);
+        return products;
+    }
+
     public async Task<IEnumerable<SaleDetail>> GetSaleDetailBySaleId(int saleId)
     {
         var response = await _context.Products

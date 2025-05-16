@@ -40,6 +40,7 @@ namespace POS.Application.Services
             var purcharsesFiltered = ApplyFilters(purcharseQueryable, filters);
             filters.Sort ??= "Id";
 
+            //Revisar la consulta que construye EF
             var sql = purcharsesFiltered.ToQueryString();
             Console.WriteLine(sql);
 
