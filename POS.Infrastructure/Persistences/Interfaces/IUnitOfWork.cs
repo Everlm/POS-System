@@ -12,6 +12,7 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IGenericRepository<Purcharse> Purcharse { get; }
         IGenericRepository<Client> Client { get; }
         IGenericRepository<Sale> Sale { get; }
+        IGenericRepository<VoucherDoumentType> VoucherDoumentType { get; }
         IPurcharseDetailRepository PurcharseDetail { get; }
         ISaleDetailRepository SaleDetail { get; }
         IProductStockRepository ProductStock { get; }

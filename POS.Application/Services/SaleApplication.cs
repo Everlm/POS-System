@@ -82,12 +82,14 @@ namespace POS.Application.Services
                 .Ordering(filters, filteredQuery, !(bool)filters.Download!)
                 .ToListAsync();
 
-            if (!items.Any())
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                return response;
-            }
+            
+            //Revisar
+            //if (!items.Any())
+            //{
+            //    response.IsSuccess = false;
+            //    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+            //    return response;
+            //}
 
             response.IsSuccess = true;
             response.Data = _mapper.Map<IEnumerable<ProductStockByWarehouseIdResponseDto>>(items);
