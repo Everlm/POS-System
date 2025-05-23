@@ -31,7 +31,6 @@ namespace POS.Application.Services
         }
 
 
-
         public async Task<BaseResponse<IEnumerable<SaleResponseDto>>> ListSale(BaseFiltersRequest filters)
         {
             var response = new BaseResponse<IEnumerable<SaleResponseDto>>();
@@ -71,18 +70,22 @@ namespace POS.Application.Services
 
             var customFilters = new Dictionary<int, Expression<Func<Product, bool>>>
             {
-                { 1, x => x.Code!.Contains(filters.TextFilter!) },
-                { 2, x => x.Name!.Contains(filters.TextFilter!) },
+                { 1, x => x.Name!.Contains(filters.TextFilter!) },
+                { 2, x => x.Code!.Contains(filters.TextFilter!) },
+
             };
 
             var filteredQuery = _filterService.ApplyFilters(products, filters, customFilters);
+            var sql = products.ToQueryString();
+            Console.WriteLine(sql);
+
             filters.Sort ??= "Id";
 
             var items = await _orderingQuery
                 .Ordering(filters, filteredQuery, !(bool)filters.Download!)
                 .ToListAsync();
 
-            
+
             //Revisar
             //if (!items.Any())
             //{
