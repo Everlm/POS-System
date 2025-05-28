@@ -834,7 +834,7 @@ namespace POS.Infrastructure.Persistences.Migrations
                     b.Property<decimal>("Tax")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<decimal>("TotalAmout")
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("VoucherDocumentTypeId")

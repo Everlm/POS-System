@@ -136,6 +136,7 @@ namespace POS.Application.Services
             {
                 var sale = _mapper.Map<Sale>(requestDto);
                 sale.State = (int)StateTypes.Active;
+
                 await _unitOfWork.Sale.RegisterAsync(sale);
 
                 var productsId = sale.SaleDetails.Select(x => x.ProductId).ToList();

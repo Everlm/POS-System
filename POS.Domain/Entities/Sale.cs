@@ -9,7 +9,7 @@
         public string? Observation { get; set; }
         public decimal SubTotal { get; set; }
         public decimal Tax { get; set; }
-        public decimal TotalAmout { get; set; }
+        public decimal TotalAmount { get; set; }
 
         public virtual ICollection<SaleDetail> SaleDetails { get; set; } = null!;
         public virtual VoucherDocumentType VoucherDocumentType { get; set; } = null!;

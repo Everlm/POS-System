@@ -13,7 +13,7 @@ namespace POS.Application.Mappers
                .ForMember(x => x.SaleId, x => x.MapFrom(y => y.Id))
                .ForMember(x => x.VoucherDescription, x => x.MapFrom(y => y.VoucherDocumentType.Description))
                .ForMember(x => x.Warehouse, x => x.MapFrom(y => y.Warehouse.Name))
-               .ForMember(x => x.Client, x => x.MapFrom(y => y.Client.Name))
+               .ForMember(x => x.Customer, x => x.MapFrom(y => y.Client.Name))
                .ForMember(x => x.DateOfSale, x => x.MapFrom(y => y.AuditCreateDate))
                .ReverseMap();
 

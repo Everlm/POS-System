@@ -20,7 +20,7 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
             builder.Property(e => e.SubTotal)
                 .HasColumnType("decimal(10,2)"); 
             
-            builder.Property(e => e.TotalAmout)
+            builder.Property(e => e.TotalAmount)
                 .HasColumnType("decimal(10,2)");
 
             builder.Property(e => e.Tax)
