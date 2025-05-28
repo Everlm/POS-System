@@ -37,7 +37,7 @@ namespace POS.Infrastructure.Persistences.Contexts
         public virtual DbSet<UsersBranchOffice> UsersBranchOffices { get; set; } = null!;
         public virtual DbSet<Warehouse> Warehouses { get; set; } = null!;
         public virtual DbSet<ProductStock> ProductStock { get; set; } = null!;
-        public virtual DbSet<VoucherDoumentType> VoucherDoumentType { get; set; } = null!;
+        public virtual DbSet<VoucherDocumentType> VoucherDoumentType { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

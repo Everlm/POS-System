@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Authorization;
 using POS.API.Authentication;
 using POS.API.CustomAttribute;

@@ -3,6 +3,7 @@
     public class SaleResponseDto
     {
         public int SaleId { get; set; }
+        //TODO:Revisar es customer
         public string Client { get; set; } = null!;
         public string VoucherNumber { get; set; } = null!;
         public string VoucherDescription { get; set; } = null!;

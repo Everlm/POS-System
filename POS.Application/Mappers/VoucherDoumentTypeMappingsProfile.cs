@@ -7,7 +7,7 @@ public class VoucherDoumentTypeMappingsProfile : Profile
 {
     public VoucherDoumentTypeMappingsProfile()
     {
-        CreateMap<VoucherDoumentType, SelectResponse>()
+        CreateMap<VoucherDocumentType, SelectResponse>()
              .ForMember(x => x.Description, x => x.MapFrom(y => y.Description))
              .ReverseMap();
     }

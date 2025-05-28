@@ -4,9 +4,9 @@ using POS.Domain.Entities;
 
 namespace POS.Infrastructure.Persistences.Contexts.Configurations
 {
-    public class VoucherDocumentTypeConfiguration : IEntityTypeConfiguration<VoucherDoumentType>
+    public class VoucherDocumentTypeConfiguration : IEntityTypeConfiguration<VoucherDocumentType>
     {
-        public void Configure(EntityTypeBuilder<VoucherDoumentType> builder)
+        public void Configure(EntityTypeBuilder<VoucherDocumentType> builder)
         {
             builder.HasKey(e => e.Id);
 

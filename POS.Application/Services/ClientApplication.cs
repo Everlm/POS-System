@@ -5,7 +5,6 @@ using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Filters;
 using POS.Application.Commons.Ordering;
 using POS.Application.Commons.Select.Response;
-using POS.Application.Dtos.Category.Response;
 using POS.Application.Dtos.Client.Request;
 using POS.Application.Dtos.Client.Response;
 using POS.Application.Interfaces;

@@ -39,7 +39,7 @@ namespace POS.Application.Services
                 .GetAllQueryable()
                 .Include(x => x.Warehouse)
                 .Include(x => x.Client)
-                .Include(x => x.VoucherDoumentType)
+                .Include(x => x.VoucherDocumentType)
                 .AsQueryable();
 
             var customFilters = new Dictionary<int, Expression<Func<Sale, bool>>>

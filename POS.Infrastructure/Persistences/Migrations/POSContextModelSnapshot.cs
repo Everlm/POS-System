@@ -840,9 +840,6 @@ namespace POS.Infrastructure.Persistences.Migrations
                     b.Property<int>("VoucherDocumentTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VoucherDoumentTypeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("VoucherNumber")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -856,7 +853,7 @@ namespace POS.Infrastructure.Persistences.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("VoucherDoumentTypeId");
+                    b.HasIndex("VoucherDocumentTypeId");
 
                     b.HasIndex("WarehouseId");
 
@@ -1002,7 +999,7 @@ namespace POS.Infrastructure.Persistences.Migrations
                     b.ToTable("UsersBranchOffices");
                 });
 
-            modelBuilder.Entity("POS.Domain.Entities.VoucherDoumentType", b =>
+            modelBuilder.Entity("POS.Domain.Entities.VoucherDocumentType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1249,9 +1246,9 @@ namespace POS.Infrastructure.Persistences.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POS.Domain.Entities.VoucherDoumentType", "VoucherDoumentType")
+                    b.HasOne("POS.Domain.Entities.VoucherDocumentType", "VoucherDocumentType")
                         .WithMany()
-                        .HasForeignKey("VoucherDoumentTypeId")
+                        .HasForeignKey("VoucherDocumentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1263,7 +1260,7 @@ namespace POS.Infrastructure.Persistences.Migrations
 
                     b.Navigation("Client");
 
-                    b.Navigation("VoucherDoumentType");
+                    b.Navigation("VoucherDocumentType");
 
                     b.Navigation("Warehouse");
                 });
