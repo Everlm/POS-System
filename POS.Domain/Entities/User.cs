@@ -13,6 +13,9 @@
         public string? Email { get; set; }
         public string? Image { get; set; }
         public string? AuthType { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
+
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<UsersBranchOffice> UsersBranchOffices { get; set; }
     }

@@ -19,7 +19,7 @@ namespace POS.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] TokenRequestDto requestDto, [FromQuery] string authType)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto, [FromQuery] string authType)
         {
             var response = await _authApplication.Login(requestDto, authType);
             return Ok(response);

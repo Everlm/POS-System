@@ -145,7 +145,12 @@ namespace POS.Application.Services
 
                 var product = _mapper.Map<Product>(requestDto);
 
-                if (requestDto.Image is not null)
+                if (productUpdate.Data.Image is null && requestDto.Image is not null)
+                {
+                    product.Image = await _fileLocalStorageApplication.SaveFileAsync(requestDto.Image, LocalContainers.PRODUCTS);
+                }
+
+                if (requestDto.Image is not null && productUpdate.Data.Image is not null)
                 {
                     product.Image = await _fileLocalStorageApplication
                         .UpdateFileAsync(requestDto.Image, LocalContainers.PRODUCTS, productUpdate.Data.Image!);
@@ -266,6 +271,6 @@ namespace POS.Application.Services
             return query;
         }
 
-       
+
     }
 }

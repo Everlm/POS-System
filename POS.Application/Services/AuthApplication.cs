@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using POS.Application.Commons.Bases.Response;
+using POS.Application.Dtos.Auth;
+using POS.Application.Dtos.Auth.Response;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;
@@ -11,6 +13,7 @@ using POS.Utilities.AppSettings;
 using POS.Utilities.Static;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using WatchDog;
 using BC = BCrypt.Net.BCrypt;
@@ -30,45 +33,79 @@ namespace POS.Application.Services
             _appSettings = appSettings.Value;
         }
 
-        public async Task<BaseResponse<string>> Login(TokenRequestDto requestDto, string authType)
+        public async Task<BaseResponse<LoginResponseDto>> Login(LoginRequestDto requestDto, string authType)
+        {
+            var response = new BaseResponse<LoginResponseDto>();
+
+            var user = await _unitOfWork.User.UserByEmail(requestDto.Email!);
+
+            if (user is null)
+            {
+                response.IsSuccess = false;
+                response.Message += ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            if (user.AuthType != authType)
+            {
+                response.IsSuccess = false;
+                response.Message += ReplyMessage.MESSAGE_AUTHTYPE_ERROR;
+                return response;
+            }
+
+            if (user is not null && BC.Verify(requestDto.Password, user.Password))
+            {
+                var refreshToken = GenerateRefreshToken();
+                var token = GenerateToken(user);
+
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+                await _unitOfWork.User.EditAsync(user);
+
+                response.IsSuccess = true;
+                response.Data = new LoginResponseDto
+                {
+                    Token = token,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
+                };
+                response.Message = ReplyMessage.MESSAGE_TOKEN;
+                return response;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<string>> RefreshToken(LoginRequestDto requestDto, string authType)
         {
             var response = new BaseResponse<string>();
 
-            try
-            {
-                var user = await _unitOfWork.User.UserByEmail(requestDto.Email!);
+            var user = await _unitOfWork.User.UserByEmail(requestDto.Email!);
 
-                if (user is null)
-                {
-                    response.IsSuccess = false;
-                    response.Message += ReplyMessage.MESSAGE_TOKEN_ERROR;
-                    return response;
-                }
-
-                if (user.AuthType != authType)
-                {
-                    response.IsSuccess = false;
-                    response.Message += ReplyMessage.MESSAGE_AUTHTYPE_ERROR;
-                    return response;
-                }
-
-                if (user is not null)
-                {
-                    if (BC.Verify(requestDto.Password, user.Password))
-                    {
-                        response.IsSuccess = true;
-                        response.Data = GenerateToken(user);
-                        response.Message = ReplyMessage.MESSAGE_TOKEN;
-                        return response;
-                    }
-                }
-
-            }
-            catch (Exception ex)
+            if (user is null)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
+                response.Message += ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            if (user.AuthType != authType)
+            {
+                response.IsSuccess = false;
+                response.Message += ReplyMessage.MESSAGE_AUTHTYPE_ERROR;
+                return response;
+            }
+
+            if (user is not null && BC.Verify(requestDto.Password, user.Password))
+            {
+                var refreshToken = GenerateRefreshToken();
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+                response.IsSuccess = true;
+                response.Data = GenerateToken(user);
+                response.Message = ReplyMessage.MESSAGE_TOKEN;
+                return response;
             }
 
             return response;
@@ -152,6 +189,11 @@ namespace POS.Application.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
 
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
     }
 }

@@ -9,7 +9,7 @@ namespace POS.Application.Mappers
         public UserMappingsProfile()
         {
             CreateMap<UserRequestDto, User>();
-            CreateMap<TokenRequestDto, User>();
+            CreateMap<LoginRequestDto, User>();
         }
     }
 }
