@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using POS.Application.Dtos.Auth.Request;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
 
@@ -22,6 +23,14 @@ namespace POS.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto, [FromQuery] string authType)
         {
             var response = await _authApplication.Login(requestDto, authType);
+            return Ok(response);
+        }
+
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto requestDto)
+        {
+            var response = await _authApplication.RefreshToken(requestDto);
             return Ok(response);
         }
 

@@ -17,6 +17,9 @@
         public const string MESSAGE_AUTHGOOGLE_ERROR = "Su cuenta no se encuentra registrada en el sistema";
         public const string MESSAGE_AUTHTYPE_ERROR = "Por favor intente iniciar sesion por otro medio";
         public const string MESSAGE_SALE_CANCEL = "La venta ha sido cancelada";
+        public const string MESSAGE_LOGIN_FAILED = "Las credenciales no son validas";
+        public const string MESSAGE_INVALID_REFRESH_TOKEN = "Token no valido";
+        public const string MESSAGE_REFRESH_TOKEN_EXPIRED = "Token expirado";
 
     }
 }

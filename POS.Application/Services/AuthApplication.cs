@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Dtos.Auth;
+using POS.Application.Dtos.Auth.Request;
 using POS.Application.Dtos.Auth.Response;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
@@ -53,35 +54,55 @@ namespace POS.Application.Services
                 return response;
             }
 
-            if (user is not null && BC.Verify(requestDto.Password, user.Password))
+            if (!BC.Verify(requestDto.Password, user.Password))
             {
-                var refreshToken = GenerateRefreshToken();
-                var token = GenerateToken(user);
-
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-
-                await _unitOfWork.User.EditAsync(user);
-
-                response.IsSuccess = true;
-                response.Data = new LoginResponseDto
-                {
-                    Token = token,
-                    RefreshToken = refreshToken,
-                    RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
-                };
-                response.Message = ReplyMessage.MESSAGE_TOKEN;
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_LOGIN_FAILED;
                 return response;
             }
 
+            var refreshToken = GenerateRefreshToken();
+            var token = GenerateToken(user);
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _unitOfWork.User.EditAsync(user);
+
+            response.IsSuccess = true;
+            response.Data = new LoginResponseDto
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
+            };
+            response.Message = ReplyMessage.MESSAGE_TOKEN;
             return response;
         }
 
-        public async Task<BaseResponse<string>> RefreshToken(LoginRequestDto requestDto, string authType)
+        public async Task<BaseResponse<LoginResponseDto>> RefreshToken(TokenRequestDto requestDto)
         {
-            var response = new BaseResponse<string>();
+            var response = new BaseResponse<LoginResponseDto>();
 
-            var user = await _unitOfWork.User.UserByEmail(requestDto.Email!);
+            var principalClaimsFromToken = GetPrincipalFromExpiredToken(requestDto.Token);
+
+            if (principalClaimsFromToken == null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            var userEmail = principalClaimsFromToken.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            var user = await _unitOfWork.User.UserByEmail(userEmail);
 
             if (user is null)
             {
@@ -90,25 +111,38 @@ namespace POS.Application.Services
                 return response;
             }
 
-            if (user.AuthType != authType)
+            if (user.RefreshToken != requestDto.RefreshToken)
             {
                 response.IsSuccess = false;
-                response.Message += ReplyMessage.MESSAGE_AUTHTYPE_ERROR;
+                response.Message = ReplyMessage.MESSAGE_INVALID_REFRESH_TOKEN;
                 return response;
             }
 
-            if (user is not null && BC.Verify(requestDto.Password, user.Password))
+            if (user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
-                var refreshToken = GenerateRefreshToken();
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-                response.IsSuccess = true;
-                response.Data = GenerateToken(user);
-                response.Message = ReplyMessage.MESSAGE_TOKEN;
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_REFRESH_TOKEN_EXPIRED;
                 return response;
             }
+
+            var newToken = GenerateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _unitOfWork.User.EditAsync(user);
+
+            response.IsSuccess = true;
+            response.Data = new LoginResponseDto
+            {
+                Token = newToken,
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
+            };
+            response.Message = ReplyMessage.MESSAGE_TOKEN;
 
             return response;
+
         }
 
         public async Task<BaseResponse<string>> LoginWithGoogle(string credentials, string authType)
@@ -157,6 +191,30 @@ namespace POS.Application.Services
             return response;
         }
 
+
+        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Secret"])),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principalToken = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            return principalToken;
+        }
+
         private string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Secret"]));
@@ -170,7 +228,6 @@ namespace POS.Application.Services
                 new Claim(JwtRegisteredClaimNames.GivenName, user.Email!),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                //new Claim(JwtRegisteredClaimNames.Iat, Guid.NewGuid().ToString(), ClaimValueTypes.Integer64)
                 new Claim(JwtRegisteredClaimNames.Iat,
                     new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
 
@@ -181,7 +238,7 @@ namespace POS.Application.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(int.Parse(_config["Jwt:Expiret"])),
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:Expiret"])),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: Credentials
 
