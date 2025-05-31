@@ -238,7 +238,7 @@ namespace POS.Application.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:Expiret"])),
+                expires: DateTime.UtcNow.AddHours(int.Parse(_config["Jwt:Expiret"])),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: Credentials
 
