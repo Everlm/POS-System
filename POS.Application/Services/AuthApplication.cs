@@ -139,8 +139,8 @@ namespace POS.Application.Services
                 RefreshToken = newRefreshToken,
                 RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
             };
-            response.Message = ReplyMessage.MESSAGE_TOKEN;
 
+            response.Message = ReplyMessage.MESSAGE_TOKEN;
             return response;
 
         }
@@ -191,6 +191,48 @@ namespace POS.Application.Services
             return response;
         }
 
+        public async Task<BaseResponse<bool>> Logout(LogoutRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+
+            var principalClaimsFromToken = GetPrincipalFromExpiredToken(requestDto.Token);
+
+            if (principalClaimsFromToken == null)
+            {
+                response.IsSuccess = false;
+                response.Data = false;
+                response.Message = ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            var userEmail = principalClaimsFromToken.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                response.IsSuccess = false;
+                response.Data = false;
+                response.Message = ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            var user = await _unitOfWork.User.UserByEmail(userEmail);
+
+            if (user is null)
+            {
+                response.IsSuccess = false;
+                response.Data = false;
+                response.Message += ReplyMessage.MESSAGE_TOKEN_ERROR;
+                return response;
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+            response.IsSuccess = true;
+            response.Data = await _unitOfWork.User.EditAsync(user);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+
+        }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
         {
@@ -252,5 +294,6 @@ namespace POS.Application.Services
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
+
     }
 }

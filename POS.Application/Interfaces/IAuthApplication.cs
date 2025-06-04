@@ -10,5 +10,6 @@ namespace POS.Application.Interfaces
         Task<BaseResponse<LoginResponseDto>> Login(LoginRequestDto requestDto, string authType);
         Task<BaseResponse<LoginResponseDto>> RefreshToken(TokenRequestDto requestDto);
         Task<BaseResponse<string>> LoginWithGoogle(string credentials, string authType);
+        Task<BaseResponse<bool>> Logout(LogoutRequestDto requestDto);
     }
 }

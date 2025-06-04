@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using POS.Application.Dtos.Auth.Request;
 using POS.Application.Dtos.User.Request;
@@ -18,8 +17,9 @@ namespace POS.API.Controllers
             _authApplication = authApplication;
         }
 
-        [AllowAnonymous]
+
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto, [FromQuery] string authType)
         {
             var response = await _authApplication.Login(requestDto, authType);
@@ -28,17 +28,27 @@ namespace POS.API.Controllers
 
 
         [HttpPost("refresh-token")]
+        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto requestDto)
         {
             var response = await _authApplication.RefreshToken(requestDto);
             return Ok(response);
         }
 
-        [AllowAnonymous]
+
         [HttpPost("LoginWithGoogle")]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginWithGoogle([FromBody] string credencials, [FromQuery] string authType)
         {
             var response = await _authApplication.LoginWithGoogle(credencials, authType);
+            return Ok(response);
+        }
+
+        [HttpPut("Logout")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto requestDto)
+        {
+            var response = await _authApplication.Logout(requestDto);
             return Ok(response);
         }
     }
