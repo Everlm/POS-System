@@ -268,7 +268,6 @@ namespace POS.Application.Services
                 new Claim(JwtRegisteredClaimNames.NameId, user.Email!),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.UserName!),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.Email!),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat,
                     new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
