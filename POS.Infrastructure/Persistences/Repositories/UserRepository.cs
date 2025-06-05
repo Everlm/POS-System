@@ -16,12 +16,14 @@ namespace POS.Infrastructure.Persistences.Repositories
         public async Task<User> UserByEmail(string email)
         {
             var user = await _context.Users
-                   .AsNoTracking()
-                   .FirstOrDefaultAsync(x => x.Email!.Equals(email));
-            
+                .AsNoTracking()
+                .Include(x => x.UserRoles)
+                .ThenInclude(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Email!.Equals(email));
+
             return user!;
         }
 
-      
+
     }
 }

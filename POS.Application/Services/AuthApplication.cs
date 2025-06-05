@@ -69,12 +69,18 @@ namespace POS.Application.Services
 
             await _unitOfWork.User.EditAsync(user);
 
+            var roles = user.UserRoles
+                .Where(ur => ur.Role?.State == (int)StateTypes.Active)
+                .Select(ur => ur.Role!.Description!)
+                .ToArray();
+
             response.IsSuccess = true;
             response.Data = new LoginResponseDto
             {
                 Token = token,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
+                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime,
+                Roles = roles
             };
             response.Message = ReplyMessage.MESSAGE_TOKEN;
             return response;
@@ -274,8 +280,11 @@ namespace POS.Application.Services
 
             };
 
-            var token = new JwtSecurityToken(
+            var roleClaims = GetRoleClaims(user);
 
+            claims.AddRange(roleClaims);
+
+            var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Issuer"],
                 claims: claims,
@@ -283,7 +292,7 @@ namespace POS.Application.Services
                 notBefore: DateTime.UtcNow,
                 signingCredentials: Credentials
 
-                );
+            );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
 
@@ -294,5 +303,13 @@ namespace POS.Application.Services
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
+        private IEnumerable<Claim> GetRoleClaims(User user)
+        {
+            var roleClaims = user.UserRoles
+                .Where(ur => ur.Role?.State == (int)StateTypes.Active && !string.IsNullOrEmpty(ur.Role.Description))
+                .Select(ur => new Claim("role", ur.Role!.Description!));
+
+            return roleClaims;
+        }
     }
 }
