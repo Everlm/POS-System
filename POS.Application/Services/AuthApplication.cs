@@ -69,18 +69,18 @@ namespace POS.Application.Services
 
             await _unitOfWork.User.EditAsync(user);
 
-            var roles = user.UserRoles
-                .Where(ur => ur.Role?.State == (int)StateTypes.Active)
-                .Select(ur => ur.Role!.Description!)
-                .ToArray();
+            // var roles = user.UserRoles
+            //     .Where(ur => ur.Role?.State == (int)StateTypes.Active)
+            //     .Select(ur => ur.Role!.Description!)
+            //     .ToArray();
 
             response.IsSuccess = true;
             response.Data = new LoginResponseDto
             {
                 Token = token,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime,
-                Roles = roles
+                // RefreshTokenExpiryTime = user.RefreshTokenExpiryTime,
+                // Roles = roles
             };
             response.Message = ReplyMessage.MESSAGE_TOKEN;
             return response;
@@ -143,7 +143,7 @@ namespace POS.Application.Services
             {
                 Token = newToken,
                 RefreshToken = newRefreshToken,
-                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
+                // RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
             };
 
             response.Message = ReplyMessage.MESSAGE_TOKEN;
@@ -273,22 +273,17 @@ namespace POS.Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.Email!),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.UserName!),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.Email!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat,
                     new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
 
             };
 
-            var roleClaims = GetRoleClaims(user);
-
-            claims.AddRange(roleClaims);
-
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(int.Parse(_config["Jwt:Expiret"])),
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:Expiret"])),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: Credentials
 
