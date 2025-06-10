@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using POS.Api.Extensions;
 using POS.API.Authentication;
+using POS.API.CustomAttribute;
+using POS.Utilities.AppSettings;
+using System.Security.Claims;
 using System.Text;
 
 namespace POS.API.Extensions
@@ -14,7 +18,7 @@ namespace POS.API.Extensions
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        RoleClaimType = "role",
+                        RoleClaimType = ClaimTypes.Role,
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
@@ -24,15 +28,11 @@ namespace POS.API.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
                     };
                 });
+                
+            services.Configure<AppSettings>(configuration.GetSection("GoogleSettings"));
+            services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
+            services.AddScoped<ApiKeyAuthFilter>();
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiKeyPolicy", policy =>
-                {
-                    policy.AddAuthenticationSchemes(new[] { JwtBearerDefaults.AuthenticationScheme });
-                    policy.Requirements.Add(new ApiKeyRequirement());
-                });
-            });
 
             return services;
         }

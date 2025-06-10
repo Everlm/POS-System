@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
+using POS.Api.Extensions;
 using POS.API.Authentication;
-using POS.API.CustomAttribute;
 using POS.API.Extensions;
 using POS.API.Middlewares;
 using POS.Application.Extensions;
 using POS.Infrastructure.Extensions;
-using POS.Utilities.AppSettings;
 using WatchDog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,15 +14,13 @@ var Cors = "Cors";
 builder.Services.AddInjectionInfrastructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
 builder.Services.AddAuthentication(Configuration);
+builder.Services.AddAppAuthorizationPolicies();
 
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
-builder.Services.Configure<AppSettings>(Configuration.GetSection("GoogleSettings"));
-builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
-builder.Services.AddScoped<ApiKeyAuthFilter>();
 builder.Services.AddHttpContextAccessor();
 
 

@@ -25,12 +25,15 @@ public class CustomerController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene un listado de clientes con opción de exportar a Excel.
+    /// Obtiene un listado de clientes con opciï¿½n de exportar a Excel.
     /// </summary>
     [HttpGet]
+    // [Authorize(Roles = AppRoles.Admin)]
+    [Authorize(Policy = AppPolicies.RequireAdminRole)]
     public async Task<IActionResult> ListCustomers([FromQuery] BaseFiltersRequest filters)
     {
         var response = await _clientApplication.ListClient(filters);
+        bool isAdmin = User.IsInRole("Admin");
 
         if ((bool)filters.Download!)
         {
