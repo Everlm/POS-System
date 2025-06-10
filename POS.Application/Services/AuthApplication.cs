@@ -143,7 +143,6 @@ namespace POS.Application.Services
             {
                 Token = newToken,
                 RefreshToken = newRefreshToken,
-                // RefreshTokenExpiryTime = user.RefreshTokenExpiryTime
             };
 
             response.Message = ReplyMessage.MESSAGE_TOKEN;
