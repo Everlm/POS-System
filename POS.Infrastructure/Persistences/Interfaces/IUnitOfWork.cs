@@ -18,6 +18,8 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IProductStockRepository ProductStock { get; }
         IWarehouseRepository Warehouse { get; }
         IUserRepository User { get; }
+        IUserRoleRepository UserRole { get; }
+        IRoleRepository Role { get; }
         void SaveChanges();
         Task SaveChangesAsync();
         IDbTransaction BeginTransaction();

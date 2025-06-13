@@ -24,5 +24,13 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
+        [Authorize]
+        [HttpPost("user-update")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDto requestDto)
+        {
+            var response = await _userApplication.UpdateUserAsync(requestDto);
+            return Ok(response);
+        }
+
     }
 }

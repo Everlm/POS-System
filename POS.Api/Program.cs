@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using POS.Api.Extensions;
+using POS.Api.Hubs;
 using POS.API.Authentication;
 using POS.API.Extensions;
 using POS.API.Middlewares;
 using POS.Application.Extensions;
+using POS.Application.Interfaces;
 using POS.Infrastructure.Extensions;
 using WatchDog;
 
@@ -23,6 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
@@ -32,8 +35,11 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("*");
         builder.AllowAnyMethod();
         builder.AllowAnyHeader();
+        // builder.AllowCredentials();
     });
 });
+
+builder.Services.AddScoped<INotifierService, SignalRNotifierService>();
 
 var app = builder.Build();
 
@@ -71,6 +77,8 @@ app.UseWatchDog(Configuration =>
     Configuration.WatchPagePassword = "123";
 
 });
+
+app.MapHub<RoleUpdateHub>("/roleUpdateHub"); 
 
 app.Run();
 

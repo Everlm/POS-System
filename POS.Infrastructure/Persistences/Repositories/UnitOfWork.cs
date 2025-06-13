@@ -24,6 +24,8 @@ namespace POS.Infrastructure.Persistences.Repositories
         private IProductStockRepository _productStock = null!;
         private IPurcharseDetailRepository _purcharseDetail = null!;
         private ISaleDetailRepository _saleDetail = null!;
+        private IUserRoleRepository _userRole = null!;
+        private IRoleRepository _role = null!;
 
         public UnitOfWork(POSContext context, IConfiguration configuration)
         {
@@ -43,6 +45,8 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IProductStockRepository ProductStock => _productStock ?? new ProductStockRepository(_context);
         public IPurcharseDetailRepository PurcharseDetail => _purcharseDetail ?? new PurcharseDetailRepository(_context);
         public ISaleDetailRepository SaleDetail => _saleDetail ?? new SaleDetailRepository(_context);
+        public IUserRoleRepository UserRole => _userRole ?? new UserRoleRepository(_context);
+        public IRoleRepository Role => _role ?? new RoleRepository(_context);
 
 
         public IDbTransaction BeginTransaction()
