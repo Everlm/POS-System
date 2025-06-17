@@ -25,7 +25,7 @@ namespace POS.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("user-update")]
+        [HttpPut("Update")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequestDto requestDto)
         {
             var response = await _userApplication.UpdateUserAsync(requestDto);

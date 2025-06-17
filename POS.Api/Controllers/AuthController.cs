@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using POS.Application.Commons.Bases.Response;
 using POS.Application.Dtos.Auth.Request;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
@@ -51,5 +52,15 @@ namespace POS.API.Controllers
             var response = await _authApplication.Logout(requestDto);
             return Ok(response);
         }
+
+        [Authorize] 
+        [HttpGet("validate-session")]
+        public IActionResult ValidateSession()
+        {
+            // Si el usuario llega aquí, significa que el token JWT es válido
+            // y ha sido autenticado por el middleware.
+            return Ok(new BaseResponse<bool> { IsSuccess = true, Data = true, Message = "Sesión válida." });
+        }
+
     }
 }

@@ -44,6 +44,34 @@ namespace POS.Application.Services
                     return response;
                 }
 
+                //Simulacion SignalR
+                if (requestDto.SendSignalTest)
+                {
+                    Console.WriteLine($"DEBUG (SIMULACIÓN SIGNALR): Bandera SendSignalTest es TRUE para {requestDto.Email}.");
+                    List<string> mockRoles = new List<string> { "SimulatedRole_1", "SimulatedRole_2", "Ping_Test" };
+
+                    if (!string.IsNullOrEmpty(user.Email))
+                    {
+                        await _notifierService.NotifyUserRolesChanged(user.Email, mockRoles);
+                        Console.WriteLine($"DEBUG (SIMULACIÓN SIGNALR): Señal enviada al cliente de {user.Email} con roles de prueba: {string.Join(", ", mockRoles)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("DEBUG (SIMULACIÓN SIGNALR): No se pudo enviar la señal, el email del usuario es nulo o vacío.");
+                    }
+
+                    // Aquí puedes decidir qué hacer después de enviar la señal de prueba:
+                    // Opcion A (Sencilla para prueba): Terminar el método aquí y no hacer ninguna actualización DB
+                    transaction.Commit(); // Aunque no haya cambios, "commit" para cerrar la transacción limpia
+                    response.IsSuccess = true;
+                    response.Message = "Simulación SignalR completada.";
+                    return response; // <--- Retorna aquí para no hacer nada más si es solo una prueba de señal
+
+                    // Opcion B (Si quieres que la simulación de señal sea ADICIONAL a una actualización real):
+                    // No retornar aquí y dejar que el resto del método se ejecute.
+                    // En ese caso, la parte de 'rolesChanged' debería ser un 'if' simple, no un 'else if'.
+                }
+
                 bool rolesChanged = false;
 
                 var currentUserRoleIds = user.UserRoles

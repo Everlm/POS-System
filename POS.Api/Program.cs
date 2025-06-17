@@ -32,10 +32,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: Cors,
     builder =>
     {
-        builder.WithOrigins("*");
-        builder.AllowAnyMethod();
-        builder.AllowAnyHeader();
-        // builder.AllowCredentials();
+        builder.WithOrigins("http://localhost:4200")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
     });
 });
 
@@ -78,7 +78,7 @@ app.UseWatchDog(Configuration =>
 
 });
 
-app.MapHub<RoleUpdateHub>("/roleUpdateHub"); 
+app.MapHub<RoleUpdateHub>("/roleUpdateHub");
 
 app.Run();
 
