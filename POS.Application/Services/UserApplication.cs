@@ -17,10 +17,10 @@ namespace POS.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IAzureStorage _azureStorage;
-        private readonly INotifierService _notifierService;
+        private readonly ISignalRNotifierService _notifierService;
 
 
-        public UserApplication(IUnitOfWork unitOfWork, IMapper mapper, IAzureStorage azureStorage, INotifierService notifierService)
+        public UserApplication(IUnitOfWork unitOfWork, IMapper mapper, IAzureStorage azureStorage, ISignalRNotifierService notifierService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -52,24 +52,18 @@ namespace POS.Application.Services
 
                     if (!string.IsNullOrEmpty(user.Email))
                     {
-                        await _notifierService.NotifyUserRolesChanged(user.Email, mockRoles);
+                        await _notifierService.NotifyUserRolesChanged(user.Email);
                         Console.WriteLine($"DEBUG (SIMULACIÓN SIGNALR): Señal enviada al cliente de {user.Email} con roles de prueba: {string.Join(", ", mockRoles)}");
                     }
                     else
                     {
                         Console.WriteLine("DEBUG (SIMULACIÓN SIGNALR): No se pudo enviar la señal, el email del usuario es nulo o vacío.");
                     }
-
-                    // Aquí puedes decidir qué hacer después de enviar la señal de prueba:
-                    // Opcion A (Sencilla para prueba): Terminar el método aquí y no hacer ninguna actualización DB
-                    transaction.Commit(); // Aunque no haya cambios, "commit" para cerrar la transacción limpia
+                   
+                    transaction.Commit();
                     response.IsSuccess = true;
                     response.Message = "Simulación SignalR completada.";
-                    return response; // <--- Retorna aquí para no hacer nada más si es solo una prueba de señal
-
-                    // Opcion B (Si quieres que la simulación de señal sea ADICIONAL a una actualización real):
-                    // No retornar aquí y dejar que el resto del método se ejecute.
-                    // En ese caso, la parte de 'rolesChanged' debería ser un 'if' simple, no un 'else if'.
+                    return response; 
                 }
 
                 bool rolesChanged = false;
@@ -134,7 +128,7 @@ namespace POS.Application.Services
                         newRoleNamesForNotification = new List<string>();
                     }
 
-                    await _notifierService.NotifyUserRolesChanged(user.Email!, newRoleNamesForNotification);
+                    await _notifierService.NotifyUserRolesChanged(user.Email!);
                     Console.WriteLine($"Notificación de roles enviada para {user.Email} con roles: {string.Join(", ", newRoleNamesForNotification)}");
                 }
 

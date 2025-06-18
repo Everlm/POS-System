@@ -32,14 +32,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: Cors,
     builder =>
     {
-        builder.WithOrigins("http://localhost:4200")
+        builder.WithOrigins("http://localhost:4200", "https://tuproduccion.com")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
     });
 });
 
-builder.Services.AddScoped<INotifierService, SignalRNotifierService>();
+builder.Services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();
 
 var app = builder.Build();
 
@@ -78,7 +78,8 @@ app.UseWatchDog(Configuration =>
 
 });
 
-app.MapHub<RoleUpdateHub>("/roleUpdateHub");
+
+app.MapHub<AuthHub>("/authHub");
 
 app.Run();
 

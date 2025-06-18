@@ -1,31 +1,37 @@
-
 using Microsoft.AspNetCore.SignalR;
 using POS.Application.Interfaces;
 
 namespace POS.Api.Hubs
 {
-    public class SignalRNotifierService : INotifierService
+    public class SignalRNotifierService : ISignalRNotifierService
     {
-        private readonly IHubContext<RoleUpdateHub> _hubContext;
+        private readonly IHubContext<AuthHub> _hubContext;
+        private readonly ILogger<SignalRNotifierService> _logger;
 
-        public SignalRNotifierService(IHubContext<RoleUpdateHub> hubContext)
+        public SignalRNotifierService(IHubContext<AuthHub> hubContext, ILogger<SignalRNotifierService> logger)
         {
             _hubContext = hubContext;
+            _logger = logger;
         }
 
-        public async Task NotifyUserRolesChanged(string userEmail, List<string> roles)
+        public async Task NotifyUserRolesChanged(string userEmail)
         {
             if (string.IsNullOrEmpty(userEmail))
             {
-                Console.WriteLine("Advertencia: userEmail es nulo o vacío, no se puede enviar notificación específica.");
+                _logger.LogWarning("userEmail es nulo o vacío");
                 return;
             }
 
-            // Envía la señal al cliente específico.
-            // "ReceiveRoleUpdate" es el nombre del método que el cliente Angular escuchará.
-            await _hubContext.Clients.User(userEmail).SendAsync("ReceiveRoleUpdate", roles);
-
-            Console.WriteLine($"SignalR: Notificación de roles enviada a usuario con email {userEmail} con roles: {string.Join(", ", roles)}");
+            try
+            {
+                await _hubContext.Clients.User(userEmail).SendAsync("RolesUpdated");
+                _logger.LogInformation($"Notificación enviada a {userEmail}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al notificar a {userEmail}: {ex.Message}");
+                throw;
+            }
 
         }
     }
