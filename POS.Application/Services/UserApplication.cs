@@ -53,17 +53,18 @@ namespace POS.Application.Services
                     if (!string.IsNullOrEmpty(user.Email))
                     {
                         await _notifierService.NotifyUserRolesChanged(user.Email);
-                        Console.WriteLine($"DEBUG (SIMULACIÓN SIGNALR): Señal enviada al cliente de {user.Email} con roles de prueba: {string.Join(", ", mockRoles)}");
+                        Console.WriteLine($"DEBUG (SIMULACIÓN SIGNALR): Señal enviada al cliente de {user.Email}");
                     }
                     else
                     {
                         Console.WriteLine("DEBUG (SIMULACIÓN SIGNALR): No se pudo enviar la señal, el email del usuario es nulo o vacío.");
                     }
-                   
+
                     transaction.Commit();
                     response.IsSuccess = true;
+                    response.Data = true;
                     response.Message = "Simulación SignalR completada.";
-                    return response; 
+                    return response;
                 }
 
                 bool rolesChanged = false;

@@ -24,7 +24,8 @@ namespace POS.Api.Hubs
 
             try
             {
-                await _hubContext.Clients.User(userEmail).SendAsync("RolesUpdated");
+                var signal = "Esto es lo que viene del servidor: Roles actualizados";
+                await _hubContext.Clients.User(userEmail).SendAsync("RolesUpdated", signal);
                 _logger.LogInformation($"Notificación enviada a {userEmail}");
             }
             catch (Exception ex)
