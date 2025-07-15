@@ -21,7 +21,15 @@ namespace POS.Infrastructure.Extensions
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IProductStockRepository, ProductStockRepository>();
+            services.AddScoped<IPurcharseDetailRepository, PurcharseDetailRepository>();
+            services.AddScoped<ISaleDetailRepository, SaleDetailRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+
+
             services.AddTransient<IGenerateExcel, GenerateExcel>();
             services.AddTransient<IFileLocalStorage, FileLocalStorage>();
 

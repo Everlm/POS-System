@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using POS.Application.Commons.Bases.Response;
-using POS.Application.Dtos.Auth;
 using POS.Application.Dtos.Auth.Request;
 using POS.Application.Dtos.Auth.Response;
 using POS.Application.Dtos.User.Request;

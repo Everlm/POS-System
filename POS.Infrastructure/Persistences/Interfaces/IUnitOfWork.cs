@@ -20,8 +20,12 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IUserRepository User { get; }
         IUserRoleRepository UserRole { get; }
         IRoleRepository Role { get; }
+       
         void SaveChanges();
         Task SaveChangesAsync();
         IDbTransaction BeginTransaction();
+        Task BeginTransactionAsync();
+        Task RollbackTransactionAsync();
+        Task CommitTransactionAsync();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
 using POS.Domain.Entities;
 using POS.Infrastructure.Persistences.Contexts;
 using POS.Infrastructure.Persistences.Interfaces;
@@ -10,44 +9,58 @@ namespace POS.Infrastructure.Persistences.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly POSContext _context;
+        private IDbContextTransaction? _transaction;
+        public IUserRepository User { get; }
+        public IGenericRepository<Category> Category { get; }
+        public IGenericRepository<Provider> Provider { get; }
+        public IGenericRepository<DocumentType> DocumentType { get; }
+        public IGenericRepository<Product> Product { get; }
+        public IGenericRepository<Purcharse> Purcharse { get; }
+        public IGenericRepository<Client> Client { get; }
+        public IGenericRepository<Sale> Sale { get; }
+        public IGenericRepository<VoucherDocumentType> VoucherDoumentType { get; }
+        public IWarehouseRepository Warehouse { get; }
+        public IProductStockRepository ProductStock { get; }
+        public IPurcharseDetailRepository PurcharseDetail { get; }
+        public ISaleDetailRepository SaleDetail { get; }
+        public IUserRoleRepository UserRole { get; }
+        public IRoleRepository Role { get; }
 
-        private IUserRepository _user = null!;
-        private IGenericRepository<Category> _category = null!;
-        private IGenericRepository<Provider> _provider = null!;
-        private IGenericRepository<DocumentType> _documentType = null!;
-        private IGenericRepository<Product> _product = null!;
-        private IGenericRepository<Purcharse> _purcharse = null!;
-        private IGenericRepository<Client> _client = null!;
-        private IGenericRepository<Sale> _sale = null!;
-        private IGenericRepository<VoucherDocumentType> _voucherDocumentType = null!;
-        private IWarehouseRepository _warehouse = null!;
-        private IProductStockRepository _productStock = null!;
-        private IPurcharseDetailRepository _purcharseDetail = null!;
-        private ISaleDetailRepository _saleDetail = null!;
-        private IUserRoleRepository _userRole = null!;
-        private IRoleRepository _role = null!;
-
-        public UnitOfWork(POSContext context, IConfiguration configuration)
+        public UnitOfWork(
+            POSContext context,
+            IUserRepository user,
+            IGenericRepository<Category> category,
+            IGenericRepository<Provider> provider,
+            IGenericRepository<DocumentType> documentType,
+            IGenericRepository<Product> product,
+            IGenericRepository<Purcharse> purcharse,
+            IGenericRepository<Client> client,
+            IGenericRepository<Sale> sale,
+            IGenericRepository<VoucherDocumentType> voucherDocumentType,
+            IWarehouseRepository warehouse,
+            IProductStockRepository productStock,
+            IPurcharseDetailRepository purcharseDetail,
+            ISaleDetailRepository saleDetail,
+            IUserRoleRepository userRole,
+            IRoleRepository role)
         {
             _context = context;
+            User = user;
+            Category = category;
+            Provider = provider;
+            DocumentType = documentType;
+            Product = product;
+            Purcharse = purcharse;
+            Client = client;
+            Sale = sale;
+            VoucherDoumentType = voucherDocumentType;
+            Warehouse = warehouse;
+            ProductStock = productStock;
+            PurcharseDetail = purcharseDetail;
+            SaleDetail = saleDetail;
+            UserRole = userRole;
+            Role = role;
         }
-
-        public IUserRepository User => _user ?? new UserRepository(_context);
-        public IGenericRepository<Category> Category => _category ?? new GenericRepository<Category>(_context);
-        public IGenericRepository<Provider> Provider => _provider ?? new GenericRepository<Provider>(_context);
-        public IGenericRepository<DocumentType> DocumentType => _documentType ?? new GenericRepository<DocumentType>(_context);
-        public IGenericRepository<Product> Product => _product ?? new GenericRepository<Product>(_context);
-        public IGenericRepository<Purcharse> Purcharse => _purcharse ?? new GenericRepository<Purcharse>(_context);
-        public IGenericRepository<Client> Client => _client ?? new GenericRepository<Client>(_context);
-        public IGenericRepository<Sale> Sale => _sale ?? new GenericRepository<Sale>(_context);
-        public IGenericRepository<VoucherDocumentType> VoucherDoumentType => _voucherDocumentType ?? new GenericRepository<VoucherDocumentType>(_context);
-        public IWarehouseRepository Warehouse => _warehouse ?? new WarehouseRepository(_context);
-        public IProductStockRepository ProductStock => _productStock ?? new ProductStockRepository(_context);
-        public IPurcharseDetailRepository PurcharseDetail => _purcharseDetail ?? new PurcharseDetailRepository(_context);
-        public ISaleDetailRepository SaleDetail => _saleDetail ?? new SaleDetailRepository(_context);
-        public IUserRoleRepository UserRole => _userRole ?? new UserRoleRepository(_context);
-        public IRoleRepository Role => _role ?? new RoleRepository(_context);
-
 
         public IDbTransaction BeginTransaction()
         {
@@ -68,6 +81,35 @@ namespace POS.Infrastructure.Persistences.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task BeginTransactionAsync()
+        {
+            if (_transaction == null)
+            {
+                _transaction = await _context.Database.BeginTransactionAsync();
+            }
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+
         }
     }
 }

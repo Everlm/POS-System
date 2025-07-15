@@ -6,6 +6,6 @@ namespace POS.Application.Interfaces
     public interface IUserApplication
     {
         Task<BaseResponse<bool>> RegisterUser(UserRequestDto requestDto);
-        Task<BaseResponse<bool>> UpdateUserAsync(UpdateUserRequestDto requestDto);
+        Task<BaseResponse<bool>> UpdateUserAsync(UpdateUserRequestDto requestDto); 
     }
 }
