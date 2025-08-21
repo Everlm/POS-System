@@ -9,6 +9,7 @@ using POS.Application.Interfaces;
 using POS.Infrastructure.Extensions;
 using WatchDog;
 
+
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
 var Cors = "Cors";
@@ -19,12 +20,12 @@ builder.Services.AddAuthentication(Configuration);
 builder.Services.AddAppAuthorizationPolicies();
 
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyHandler>();
+builder.Services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
@@ -32,36 +33,32 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: Cors,
     builder =>
     {
-        builder.WithOrigins("http://localhost:4200", "https://tuproduccion.com")
+        builder.WithOrigins("http://localhost:4200", "https://tuproduccion.com", "http://localhost:8080")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
     });
 });
 
-builder.Services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();
+
 
 var app = builder.Build();
-
-app.UseCors(Cors);
 
 // app.UseMiddleware<ApiKeyMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseSwagger();
-
-//app.UseSwaggerUI();
-
 app.UseWatchDogExceptionLogger();
 
 app.UseHttpsRedirection();
+
+app.UseCors(Cors);
 
 app.UseStaticFiles();
 

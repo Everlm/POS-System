@@ -36,7 +36,7 @@ namespace POS.API.Middlewares
             {
                 Status = response.StatusCode,
                 Title = "An error occurred while processing your request",
-                Detail = exception.Message,
+                Detail = exception.ToString(),
                 Instance = context.Request.Path
             };
 
