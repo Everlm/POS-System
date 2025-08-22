@@ -24,8 +24,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 
 # Set production environment and URLs
-ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ASPNETCORE_URLS=http://+:80
+#ENV ASPNETCORE_ENVIRONMENT=Development
+#ENV ASPNETCORE_URLS=http://+:80
 
 # Create a non-root user for security
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
@@ -36,5 +36,9 @@ COPY --from=build /app/publish .
 
 # Expose the port the app runs on
 EXPOSE 80
+
+# Healthcheck
+#HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  #CMD curl -f http://localhost:80/health || exit 1
 
 ENTRYPOINT ["dotnet", "POS.API.dll"]

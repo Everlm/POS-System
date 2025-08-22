@@ -1,0 +1,17 @@
+services:
+  api:
+    env_file:
+      - .env.prod
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1000M
+    restart: always
+
+  db:
+    ports:
+      - "1433:1433"
+    restart: always

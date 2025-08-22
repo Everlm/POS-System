@@ -1,0 +1,16 @@
+services:
+  api:
+    env_file:
+      - .env.dev
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - DOTNET_HOST_PATH=/usr/share/dotnet/dotnet
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__POSConnection=Server=db,1433;Database=POS;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+    volumes:
+      - ./POS.Api:/src/POS.Api
+      - ./POS.Application:/src/POS.Application
+      - ./POS.Domain:/src/POS.Domain
+      - ./POS.Infrastructure:/src/POS.Infrastructure
+      - ./POS.Utilities:/src/POS.Utilities

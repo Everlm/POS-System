@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
 var Cors = "Cors";
 
+
 builder.Services.AddInjectionInfrastructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
 builder.Services.AddAuthentication(Configuration);
@@ -33,13 +34,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: Cors,
     builder =>
     {
-        builder.WithOrigins("http://localhost:4200", "https://tuproduccion.com", "http://localhost:8080")
+        builder.WithOrigins("http://localhost:4200", "https://tuproduccion.com")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
     });
 });
-
 
 
 var app = builder.Build();
@@ -48,10 +48,11 @@ var app = builder.Build();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 
 app.UseWatchDogExceptionLogger();
@@ -77,6 +78,7 @@ app.UseWatchDog(Configuration =>
 
 
 app.MapHub<AuthHub>("/authHub");
+app.MapGet("/health", () => Results.Ok("OK"));
 
 app.Run();
 
