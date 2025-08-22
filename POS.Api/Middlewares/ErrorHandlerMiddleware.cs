@@ -6,10 +6,12 @@ namespace POS.API.Middlewares
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IWebHostEnvironment _env;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandlerMiddleware(RequestDelegate next, IWebHostEnvironment env)
         {
             _next = next;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -26,7 +28,7 @@ namespace POS.API.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            WatchLogger.Log(exception.Message);
+            WatchLogger.Log(exception.ToString());
 
             var response = context.Response;
             response.ContentType = "application/json";
@@ -36,7 +38,7 @@ namespace POS.API.Middlewares
             {
                 Status = response.StatusCode,
                 Title = "An error occurred while processing your request",
-                Detail = exception.ToString(),
+                Detail = _env.IsDevelopment() ? exception.ToString() : exception.Message,
                 Instance = context.Request.Path
             };
 

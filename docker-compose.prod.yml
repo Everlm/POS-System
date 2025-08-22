@@ -1,17 +1,63 @@
+
 services:
-  api:
+  # Servicio de la API de .NET
+  pos-api:
+    image: tu-registro/pos-api:1.0.0 # ¡Importante! Usa una imagen versionada desde un registro
     env_file:
       - .env.prod
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      # La conexión ahora usa el nombre del servicio 'pos-db'
+      - ConnectionStrings__POSConnection=Server=db,1433;Database=POS;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+    networks:
+      - pos-network
     deploy:
       resources:
+        reservations: # Garantiza recursos mínimos
+          cpus: '1.0'
+          memory: 500M
         limits:
           cpus: '2.0'
           memory: 1000M
     restart: always
+    depends_on:
+      pos-db:
+        condition: service_healthy # Espera a que la BD esté saludable
+    logging: # Controla el tamaño de los logs
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  db:
-    ports:
-      - "1433:1433"
+  # Servicio de la Base de Datos SQL Server
+  pos-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      # La contraseña ahora se gestiona con Docker Secrets
+      - SA_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - pos_db_data:/var/opt/mssql # Persistencia de datos
+    networks:
+      - pos-network
     restart: always
+    healthcheck: # Comprueba que la BD esté operativa
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "$$(cat /run/secrets/db_password)", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+# Definiciones de recursos de alto nivel
+volumes:
+  pos_db_data: # Volumen para persistir los datos de la BD
+
+networks:
+  pos-network: # Red privada para la comunicación entre servicios
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ./db_password.txt # Archivo que contiene la contraseña
