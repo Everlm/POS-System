@@ -5,7 +5,6 @@ using POS.Application.Interfaces;
 using POS.Domain.Entities;
 using POS.Infrastructure.FileStorage;
 using POS.Infrastructure.Persistences.Interfaces;
-using POS.Infrastructure.Persistences.Repositories;
 using POS.Utilities.Static;
 using WatchDog;
 using BC = BCrypt.Net.BCrypt;

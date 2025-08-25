@@ -23,7 +23,7 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${DB_PASSWORD}
     ports:
-      - "1433:1433"
+      - "11433:1433"
     volumes:
       - sql_data:/var/opt/mssql
     restart: unless-stopped

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using POS.Domain.Entities;
+using POS.Infrastructure.SeedData;
 using System.Reflection;
 
 namespace POS.Infrastructure.Persistences.Contexts
@@ -43,7 +44,7 @@ namespace POS.Infrastructure.Persistences.Contexts
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Modern_Spanish_CI_AS");
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
+            POSContextSeed.Seed(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
         }
 
