@@ -7,10 +7,12 @@ using POS.API.Middlewares;
 using POS.Application.Extensions;
 using POS.Application.Interfaces;
 using POS.Infrastructure.Extensions;
+using QuestPDF.Infrastructure;
 using WatchDog;
 
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = LicenseType.Community;
 var Configuration = builder.Configuration;
 var Cors = "Cors";
 

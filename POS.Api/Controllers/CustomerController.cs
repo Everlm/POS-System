@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
-using POS.Application.Dtos.Category.Request;
 using POS.Application.Dtos.Client.Request;
 using POS.Application.Interfaces;
-using POS.Application.Services;
 using POS.Utilities.Static;
 
 namespace POS.API.Controllers;
@@ -28,8 +26,6 @@ public class CustomerController : ControllerBase
     /// Obtiene un listado de clientes con opci�n de exportar a Excel.
     /// </summary>
     [HttpGet]
-    // [Authorize(Roles = AppRoles.Admin)]
-    [Authorize(Policy = AppPolicies.RequireAdminRole)]
     public async Task<IActionResult> ListCustomers([FromQuery] BaseFiltersRequest filters)
     {
         var response = await _clientApplication.ListClient(filters);

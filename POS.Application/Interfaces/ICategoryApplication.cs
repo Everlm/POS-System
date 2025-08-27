@@ -7,7 +7,8 @@ using POS.Application.Dtos.Category.Response;
 namespace POS.Application.Interfaces
 {
     public interface ICategoryApplication
-    {
+    {  
+        Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument();
         Task<BaseResponse<IEnumerable<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters);
         Task<BaseResponse<IEnumerable<SelectResponse>>> ListSelectCategories();
         Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId);

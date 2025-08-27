@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using POS.Application.Commons.Filters;
 using POS.Application.Commons.Ordering;
+using POS.Application.Documents;
 using POS.Application.Extensions.WatchDog;
 using POS.Application.Interfaces;
 using POS.Application.Services;
@@ -18,6 +19,7 @@ namespace POS.Application.Extensions
             services.AddSingleton(configuration);
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddScoped<IDocumentGenerator, DocumentGenerator>();
 
             services.AddScoped<ICategoryApplication, CategoryApplication>();
             services.AddScoped<IUserApplication, UserApplication>();

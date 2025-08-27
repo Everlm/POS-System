@@ -7,9 +7,10 @@ using POS.Utilities.Static;
 
 namespace POS.API.Controllers
 {
-    // [Authorize]
+
     [Route("api/[controller]")]
     [ApiController]
+    // [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryApplication _categoryApplication;
@@ -19,6 +20,19 @@ namespace POS.API.Controllers
         {
             _categoryApplication = categoryApplication;
             _generateExcelApplication = generateExcelApplication;
+        }
+
+        [HttpGet("GenerateCategoriesPdfDocument")]
+        public async Task<IActionResult> GenerateCategoriesPdfDocument()
+        {
+            var response = await _categoryApplication.GenerateCategoriesPdfDocument();
+
+            if (!response.IsSuccess)
+            {
+                return BadRequest(response);
+            }
+
+            return File(response.Data!, "application/pdf", "CategoriesReport.pdf");
         }
 
         [HttpGet]
@@ -37,6 +51,10 @@ namespace POS.API.Controllers
         }
 
         [HttpGet("Select")]
+        //[ApiKey]
+        //[Authorize(Policy = "ApiKeyPolicy")] Ejemplo de autorizacion por policy
+        // [Authorize(Roles = AppRoles.Admin)]
+        [Authorize(Policy = AppPolicies.RequireAdminRole)]
         public async Task<IActionResult> ListSelectCategories()
         {
             var response = await _categoryApplication.ListSelectCategories();

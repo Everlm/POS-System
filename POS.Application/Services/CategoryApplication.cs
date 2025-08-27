@@ -4,6 +4,8 @@ using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Ordering;
 using POS.Application.Commons.Select.Response;
+using POS.Application.Documents;
+using POS.Application.Documents.Category;
 using POS.Application.Dtos.Category.Request;
 using POS.Application.Dtos.Category.Response;
 using POS.Application.Interfaces;
@@ -11,6 +13,7 @@ using POS.Application.Validators.Category;
 using POS.Domain.Entities;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
+using QuestPDF.Companion;
 using WatchDog;
 
 namespace POS.Application.Services
@@ -21,15 +24,45 @@ namespace POS.Application.Services
         private readonly IMapper _mapper;
         private readonly CategoryValidator _validateRules;
         private readonly IOrderingQuery _orderingQuery;
+        private readonly IDocumentGenerator _documentGenerator;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery)
+        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validateRules = validateRules;
             _orderingQuery = orderingQuery;
+            _documentGenerator = documentGenerator;
         }
+        public async Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument()
+        {
+            var response = new BaseResponse<byte[]>();
 
+            var categories = await _unitOfWork.Category.GetAllAsync();
+
+            if (categories is null)
+            {
+                response.IsSuccess = false;
+                response.Data = null;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var categoriesDto = _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
+
+            // 3. Crea una instancia del documento de reporte, pasándole los DTOs
+            var document = new CategoryDocument(categoriesDto);
+            document.ShowInCompanion();
+
+            // 4. Usa el generador para crear el PDF en forma de byte array
+            var pdfBytes = _documentGenerator.GeneratePdf(document);
+
+            // 5. Asigna el byte array directamente a la propiedad Data de la respuesta
+            response.IsSuccess = true;
+            response.Data = pdfBytes;
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+        }
         public async Task<BaseResponse<IEnumerable<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters)
         {
             var response = new BaseResponse<IEnumerable<CategoryResponseDto>>();
@@ -263,5 +296,8 @@ namespace POS.Application.Services
 
             return query;
         }
+
     }
+
+
 }
