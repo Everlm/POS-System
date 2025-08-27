@@ -3,6 +3,7 @@ using Moq;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Ordering;
 using POS.Application.Documents;
+using POS.Application.Interfaces;
 using POS.Application.Mappers;
 using POS.Application.Services;
 using POS.Application.Validators.Category;
@@ -21,6 +22,7 @@ namespace PPOS.UnitTest.CategoryApplicationTest
         private readonly CategoryApplication _categoryApplication;
         private readonly Mock<IOrderingQuery> _orderingQueryMock;
         private readonly Mock<IDocumentGenerator> _documentGeneratorMock;
+        private readonly Mock<IDocumentFactory> _documentFactoryMock;
 
         public CategoryApplicationTests()
         {
@@ -33,13 +35,15 @@ namespace PPOS.UnitTest.CategoryApplicationTest
 
             _orderingQueryMock = new Mock<IOrderingQuery>();
             _documentGeneratorMock = new Mock<IDocumentGenerator>();
+            _documentFactoryMock = new Mock<IDocumentFactory>();
 
             _categoryApplication = new CategoryApplication(
                 _unitOfWorkMock.Object,
                 _mapper,
                 _validateRules,
                 _orderingQueryMock.Object,
-                _documentGeneratorMock.Object
+                _documentGeneratorMock.Object,
+                _documentFactoryMock.Object
             );
         }
 

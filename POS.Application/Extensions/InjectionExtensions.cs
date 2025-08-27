@@ -20,6 +20,7 @@ namespace POS.Application.Extensions
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IDocumentGenerator, DocumentGenerator>();
+            services.AddScoped<IDocumentFactory, DocumentFactory>();
 
             services.AddScoped<ICategoryApplication, CategoryApplication>();
             services.AddScoped<IUserApplication, UserApplication>();

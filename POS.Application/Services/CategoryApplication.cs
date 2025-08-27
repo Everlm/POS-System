@@ -5,7 +5,6 @@ using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Ordering;
 using POS.Application.Commons.Select.Response;
 using POS.Application.Documents;
-using POS.Application.Documents.Category;
 using POS.Application.Dtos.Category.Request;
 using POS.Application.Dtos.Category.Response;
 using POS.Application.Interfaces;
@@ -25,14 +24,16 @@ namespace POS.Application.Services
         private readonly CategoryValidator _validateRules;
         private readonly IOrderingQuery _orderingQuery;
         private readonly IDocumentGenerator _documentGenerator;
+        private readonly IDocumentFactory _documentFactory;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator)
+        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validateRules = validateRules;
             _orderingQuery = orderingQuery;
             _documentGenerator = documentGenerator;
+            _documentFactory = documentFactory;
         }
         public async Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument()
         {
@@ -50,14 +51,13 @@ namespace POS.Application.Services
 
             var categoriesDto = _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
 
-            // 3. Crea una instancia del documento de reporte, pasándole los DTOs
-            var document = new CategoryDocument(categoriesDto);
-            document.ShowInCompanion();
+            var document = _documentFactory.CreateCategoryDocument(categoriesDto);
 
-            // 4. Usa el generador para crear el PDF en forma de byte array
+#if DEBUG
+            document.ShowInCompanion();
+#endif
             var pdfBytes = _documentGenerator.GeneratePdf(document);
 
-            // 5. Asigna el byte array directamente a la propiedad Data de la respuesta
             response.IsSuccess = true;
             response.Data = pdfBytes;
             response.Message = ReplyMessage.MESSAGE_QUERY;
