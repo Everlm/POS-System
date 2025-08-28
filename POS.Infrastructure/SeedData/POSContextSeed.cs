@@ -48,6 +48,20 @@ namespace POS.Infrastructure.SeedData
                     RoleId = 2
                 }
             );
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    Id = 1,
+                    Description = "Bebidas",
+                    AuditCreateDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                },
+                new Category
+                {
+                    Id = 2,
+                    Description = "Comidas",
+                    AuditCreateDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                }
+            );
         }
     }
 }
