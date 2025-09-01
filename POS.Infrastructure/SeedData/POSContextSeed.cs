@@ -52,14 +52,20 @@ namespace POS.Infrastructure.SeedData
                 new Category
                 {
                     Id = 1,
+                    Name = "Bebidas",
                     Description = "Bebidas",
-                    AuditCreateDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                    AuditCreateUser = 1,
+                    AuditCreateDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    State = 1
                 },
                 new Category
                 {
                     Id = 2,
+                    Name = "Comidas",
                     Description = "Comidas",
-                    AuditCreateDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                    AuditCreateUser = 1,
+                    AuditCreateDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    State = 1
                 }
             );
         }

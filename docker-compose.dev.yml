@@ -1,3 +1,4 @@
+# docker-compose.dev.yml
 services:
   api:
     env_file:
@@ -7,6 +8,8 @@ services:
       - DOTNET_RUNNING_IN_CONTAINER=true
       - DOTNET_HOST_PATH=/usr/share/dotnet/dotnet
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ConnectionStrings__POSConnection=Server=db,1433;Database=POS;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
     volumes:
       - ./POS.Api:/src/POS.Api

@@ -1,4 +1,4 @@
-
+# docker-compose.yml
 services:
   api:
     build:
@@ -7,10 +7,11 @@ services:
     container_name: pos_api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=http://+:${APP_PORT}
+      - ASPNETCORE_URLS=http://+:${APP_PORT};https://+:${APP_HTTPS_PORT}
       - ConnectionStrings__POSConnection=${DB_CONNECTION}
     ports:
       - "${APP_PORT}:${APP_PORT}"
+      - "${APP_HTTPS_PORT}:${APP_HTTPS_PORT}"
     depends_on:
       db:
         condition: service_healthy

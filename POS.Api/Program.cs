@@ -36,7 +36,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: Cors,
     builder =>
     {
-        builder.WithOrigins("http://localhost:4200", "https://tuproduccion.com")
+        builder.WithOrigins(
+            "http://localhost:4200",
+            "https://tuproduccion.com",
+            "https://localhost:443",
+            "http://localhost",
+            "http://localhost:80"
+            )
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();

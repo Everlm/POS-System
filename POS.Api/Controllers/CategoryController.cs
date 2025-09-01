@@ -11,6 +11,7 @@ namespace POS.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     // [Authorize]
+    // [AllowAnonymous]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryApplication _categoryApplication;
@@ -54,7 +55,7 @@ namespace POS.API.Controllers
         //[ApiKey]
         //[Authorize(Policy = "ApiKeyPolicy")] Ejemplo de autorizacion por policy
         // [Authorize(Roles = AppRoles.Admin)]
-        [Authorize(Policy = AppPolicies.RequireAdminRole)]
+        // [Authorize(Policy = AppPolicies.RequireAdminRole)]
         public async Task<IActionResult> ListSelectCategories()
         {
             var response = await _categoryApplication.ListSelectCategories();

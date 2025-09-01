@@ -19,13 +19,23 @@ WORKDIR "/src/POS.Api"
 # Publish the application, which also builds it
 RUN dotnet publish "./POS.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Stage 2: Create the final production image
+# Stage 2: Create the final production image  with HTTPS certificate
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 
-# Set production environment and URLs
-#ENV ASPNETCORE_ENVIRONMENT=Development
-#ENV ASPNETCORE_URLS=http://+:80
+# Install openssl and generate self-signed cert
+RUN apt-get update && apt-get install -y openssl \
+    && mkdir -p /https \
+    && openssl req -x509 -nodes -days 365 \
+       -subj "/CN=localhost" \
+       -newkey rsa:2048 -keyout /https/aspnetapp.key \
+       -out /https/aspnetapp.crt \
+    && openssl pkcs12 -export -out /https/aspnetapp.pfx \
+       -inkey /https/aspnetapp.key -in /https/aspnetapp.crt \
+       -passout pass:YourPassword \
+    && chown -R 5678:5678 /https \
+    && apt-get purge -y --auto-remove openssl \
+    && rm -rf /var/lib/apt/lists/*  
 
 # Create a non-root user for security
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
@@ -35,10 +45,7 @@ USER appuser
 COPY --from=build /app/publish .
 
 # Expose the port the app runs on
-EXPOSE 80
-
-# Healthcheck
-#HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  #CMD curl -f http://localhost:80/health || exit 1
+# EXPOSE 80
+# EXPOSE 443
 
 ENTRYPOINT ["dotnet", "POS.API.dll"]
