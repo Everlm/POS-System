@@ -6,8 +6,8 @@ public interface ICategoryRepositoryDapper
 {
     Task<IEnumerable<Category>> GetAllCategoriesAsync();
     Task<Category?> GetCategoryByIdAsync(int categoryId);    
-    Task<int> RegisterCategoryAsync(Category category);      
-    Task<int> EditCategoryAsync(Category category);           
-    Task<int> DeleteCategoryAsync(int categoryId);
-
+    Task<bool> CreateCategoryAsync(Category category);      
+    Task<bool> UpdateCategoryAsync(Category category);           
+    Task<bool> SoftDeleteCategoryAsync(int auditDeleteUser, int categoryId);
+    Task<bool> HardDeleteCategoryAsync(int categoryId);
 }

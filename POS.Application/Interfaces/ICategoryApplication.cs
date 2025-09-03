@@ -15,7 +15,11 @@ namespace POS.Application.Interfaces
         Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId);
         Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId);
         Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto);
+        Task<BaseResponse<bool>> SPCreateCategory(CategoryRequestDto requestDto);
         Task<BaseResponse<bool>> EditCategory(CategoryRequestDto requestDto, int categoryId);
+        Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId);
         Task<BaseResponse<bool>> DeleteCategory(int categoryId);
+        Task<BaseResponse<bool>> SPDeleteCategory(int categoryId);
+        Task<BaseResponse<bool>> SPHardDeleteCategory(int categoryId);
     }
 }

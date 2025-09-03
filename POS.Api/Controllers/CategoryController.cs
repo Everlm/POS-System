@@ -61,7 +61,7 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("SP_Select")]
+        [HttpGet("sp/Select")]
         public async Task<IActionResult> SPListSelectCategories()
         {
             var response = await _categoryApplication.SPListSelectCategories();
@@ -89,6 +89,13 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("sp/create")]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDto requestDto)
+        {
+            var response = await _categoryApplication.SPCreateCategory(requestDto);
+            return Ok(response);
+        }
+
         [HttpPut("Edit/{categoryId:int}")]
         public async Task<IActionResult> EditCategory(int categoryId, [FromBody] CategoryRequestDto requestDto)
         {
@@ -96,10 +103,31 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
+        [HttpPut("sp/Update/{categoryId:int}")]
+        public async Task<IActionResult> SPUpdateCategory(int categoryId, [FromBody] CategoryRequestDto requestDto)
+        {
+            var response = await _categoryApplication.SPUpdateCategory(requestDto, categoryId);
+            return Ok(response);
+        }
+
         [HttpPut("Delete/{categoryId:int}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {
             var response = await _categoryApplication.DeleteCategory(categoryId);
+            return Ok(response);
+        }
+
+        [HttpPut("sp/soft-delete/{categoryId:int}")]
+        public async Task<IActionResult> SPDeleteCategory(int categoryId)
+        {
+            var response = await _categoryApplication.SPDeleteCategory(categoryId);
+            return Ok(response);
+        }
+
+        [HttpDelete("sp/hard-delete/{categoryId:int}")]
+        public async Task<IActionResult> SPHardDeleteCategory(int categoryId)
+        {
+            var response = await _categoryApplication.SPHardDeleteCategory(categoryId);
             return Ok(response);
         }
     }

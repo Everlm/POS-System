@@ -27,27 +27,44 @@ public class CategoryRepositoryDapper : ICategoryRepositoryDapper
         return result.FirstOrDefault();
     }
 
-    public async Task<int> RegisterCategoryAsync(Category category)
+    public async Task<bool> CreateCategoryAsync(Category category)
     {
-        return await _storedProcedureService.ExecuteNonQueryAsync(
-            StoredProcedureNames.RegisterCategory,
-            new { category.Name, category.Description, category.State}
+        var affectedRows = await _storedProcedureService.ExecuteNonQueryAsync(
+            StoredProcedureNames.CreateCategory,
+            new { category.Name, category.Description, category.State, category.AuditCreateUser }
         );
+
+        return affectedRows > 0;
     }
 
-    public async Task<int> EditCategoryAsync(Category category)
+    public async Task<bool> UpdateCategoryAsync(Category category)
     {
-        return await _storedProcedureService.ExecuteNonQueryAsync(
-            StoredProcedureNames.EditCategory,
-            new { category.Id, category.Name, category.Description }
+        var affectedRows = await _storedProcedureService.ExecuteNonQueryAsync(
+            StoredProcedureNames.UpdateCategory,
+            new { category.Id, category.Name, category.Description, category.State, category.AuditUpdateUser }
         );
+
+        return affectedRows > 0;
     }
 
-    public async Task<int> DeleteCategoryAsync(int categoryId)
+    public async Task<bool> SoftDeleteCategoryAsync(int auditDeleteUser, int categoryId)
     {
-        return await _storedProcedureService.ExecuteNonQueryAsync(
+        var affectedRows = await _storedProcedureService.ExecuteNonQueryAsync(
             StoredProcedureNames.DeleteCategory,
+            new { CategoryId = categoryId, AuditDeleteUser = auditDeleteUser }
+        );
+
+        return affectedRows > 0;
+    }
+
+    public async Task<bool> HardDeleteCategoryAsync(int categoryId)
+    {
+        var affectedRows = await _storedProcedureService.ExecuteNonQueryAsync(
+            StoredProcedureNames.HardDeleteCategory,
             new { CategoryId = categoryId }
         );
+
+        return affectedRows > 0;
     }
+
 }

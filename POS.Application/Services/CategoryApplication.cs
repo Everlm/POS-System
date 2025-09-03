@@ -172,39 +172,58 @@ namespace POS.Application.Services
         public async Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto)
         {
             var response = new BaseResponse<bool>();
+            var validationResult = await _validateRules.ValidateAsync(requestDto);
 
-            try
-            {
-                var validationResult = await _validateRules.ValidateAsync(requestDto);
-
-                if (!validationResult.IsValid)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_VALIDATE;
-                    response.Errors = validationResult.Errors;
-                    return response;
-                }
-
-                var category = _mapper.Map<Category>(requestDto);
-                response.Data = await _unitOfWork.Category.RegisterAsync(category);
-
-                if (response.Data)
-                {
-                    response.IsSuccess = true;
-                    response.Message += ReplyMessage.MESSAGE_SAVE;
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_FAILED;
-                }
-
-            }
-            catch (Exception ex)
+            if (!validationResult.IsValid)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
+                response.Message = ReplyMessage.MESSAGE_VALIDATE;
+                response.Errors = validationResult.Errors;
+                return response;
+            }
+
+            var category = _mapper.Map<Category>(requestDto);
+            response.Data = await _unitOfWork.Category.RegisterAsync(category);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message += ReplyMessage.MESSAGE_SAVE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+        public async Task<BaseResponse<bool>> SPCreateCategory(CategoryRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+            var validationResult = await _validateRules.ValidateAsync(requestDto);
+
+            if (!validationResult.IsValid)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_VALIDATE;
+                response.Errors = validationResult.Errors;
+                return response;
+            }
+
+            var category = _mapper.Map<Category>(requestDto);
+            category.AuditCreateUser = 1;
+            response.Data = await _categoryRepositoryDapper.CreateCategoryAsync(category);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message += ReplyMessage.MESSAGE_SAVE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
             }
 
             return response;
@@ -213,37 +232,60 @@ namespace POS.Application.Services
         {
             var response = new BaseResponse<bool>();
 
-            try
-            {
-                var categoryEdit = await GetCategoryById(categoryId);
 
-                if (categoryEdit.Data is null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                    return response;
-                }
+            var categoryEdit = await GetCategoryById(categoryId);
 
-                var category = _mapper.Map<Category>(requestDto);
-                category.Id = categoryId;
-                response.Data = await _unitOfWork.Category.EditAsync(category);
-
-                if (response.Data)
-                {
-                    response.IsSuccess = true;
-                    response.Message = ReplyMessage.MESSAGE_UPDATE;
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_FAILED;
-                }
-            }
-            catch (Exception ex)
+            if (categoryEdit.Data is null)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var category = _mapper.Map<Category>(requestDto);
+            category.Id = categoryId;
+            response.Data = await _unitOfWork.Category.EditAsync(category);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_UPDATE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+
+        }
+        public async Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId)
+        {
+            var response = new BaseResponse<bool>();
+            var categoryToUpdate = await SPGetCategoryById(categoryId);
+
+            if (categoryToUpdate.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var category = _mapper.Map<Category>(requestDto);
+            category.Id = categoryId;
+            category.AuditUpdateUser = 1;
+            response.Data = await _categoryRepositoryDapper.UpdateCategoryAsync(category);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_UPDATE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
             }
 
             return response;
@@ -252,41 +294,89 @@ namespace POS.Application.Services
         public async Task<BaseResponse<bool>> DeleteCategory(int categoryId)
         {
             var response = new BaseResponse<bool>();
+            var category = await GetCategoryById(categoryId);
 
-            try
-            {
-                var category = await GetCategoryById(categoryId);
-
-                if (category.Data is null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                    return response;
-                }
-
-                response.Data = await _unitOfWork.Category.DeleteAsync(categoryId);
-
-                if (response.Data)
-                {
-                    response.IsSuccess = true;
-                    response.Message = ReplyMessage.MESSAGE_DELETE;
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_FAILED;
-                }
-            }
-            catch (Exception ex)
+            if (category.Data is null)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.Data = await _unitOfWork.Category.DeleteAsync(categoryId);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_DELETE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
             }
 
             return response;
-
         }
+        public async Task<BaseResponse<bool>> SPDeleteCategory(int categoryId)
+        {
+            var response = new BaseResponse<bool>();
+
+            var categoryToDelete = await SPGetCategoryById(categoryId);
+
+            if (categoryToDelete.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var auditDeleteUser = 1;
+
+            response.Data = await _categoryRepositoryDapper.SoftDeleteCategoryAsync(auditDeleteUser, categoryId);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_DELETE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+        public async Task<BaseResponse<bool>> SPHardDeleteCategory(int categoryId)
+        {
+            var response = new BaseResponse<bool>();
+
+            var categoryToDelete = await SPGetCategoryById(categoryId);
+
+            if (categoryToDelete.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.Data = await _categoryRepositoryDapper.HardDeleteCategoryAsync(categoryId);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_DELETE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
         private static IQueryable<Category> ApplyFilters(IQueryable<Category> query, BaseFiltersRequest filters)
         {
             if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
