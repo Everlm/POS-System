@@ -6,6 +6,7 @@ using POS.Infrastructure.FileStorage;
 using POS.Infrastructure.Persistences.Contexts;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Infrastructure.Persistences.Repositories;
+using POS.Infrastructure.Persistences.StoredProcedures;
 
 namespace POS.Infrastructure.Extensions
 {
@@ -21,6 +22,8 @@ namespace POS.Infrastructure.Extensions
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddScoped<IStoredProcedureService, StoredProcedureService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<IProductStockRepository, ProductStockRepository>();
@@ -29,6 +32,8 @@ namespace POS.Infrastructure.Extensions
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
 
+            //Dapper servicies
+            services.AddScoped<ICategoryRepositoryDapper, CategoryRepositoryDapper>();
 
             services.AddTransient<IGenerateExcel, GenerateExcel>();
             services.AddTransient<IFileLocalStorage, FileLocalStorage>();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Dtos.Category.Request;
 using POS.Application.Interfaces;
@@ -62,11 +61,24 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("SP_Select")]
+        public async Task<IActionResult> SPListSelectCategories()
+        {
+            var response = await _categoryApplication.SPListSelectCategories();
+            return Ok(response);
+        }
 
         [HttpGet("{categoryId:int}")]
         public async Task<IActionResult> GetCategoryById(int categoryId)
         {
             var response = await _categoryApplication.GetCategoryById(categoryId);
+            return Ok(response);
+        }
+
+        [HttpGet("sp/{categoryId:int}")]
+        public async Task<IActionResult> SPGetCategoryById(int categoryId)
+        {
+            var response = await _categoryApplication.SPGetCategoryById(categoryId);
             return Ok(response);
         }
 

@@ -25,8 +25,9 @@ namespace POS.Application.Services
         private readonly IOrderingQuery _orderingQuery;
         private readonly IDocumentGenerator _documentGenerator;
         private readonly IDocumentFactory _documentFactory;
+        private readonly ICategoryRepositoryDapper _categoryRepositoryDapper;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory)
+        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory, ICategoryRepositoryDapper categoryRepositoryDapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -34,6 +35,7 @@ namespace POS.Application.Services
             _orderingQuery = orderingQuery;
             _documentGenerator = documentGenerator;
             _documentFactory = documentFactory;
+            _categoryRepositoryDapper = categoryRepositoryDapper;
         }
         public async Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument()
         {
@@ -97,60 +99,74 @@ namespace POS.Application.Services
         {
             var response = new BaseResponse<IEnumerable<SelectResponse>>();
 
-            try
-            {
-                var categories = await _unitOfWork.Category.GetAllAsync();
+            var categories = await _unitOfWork.Category.GetAllAsync();
 
-                if (categories is not null)
-                {
-                    response.IsSuccess = true;
-                    response.Data = _mapper.Map<IEnumerable<SelectResponse>>(categories);
-                    response.TotalRecords = categories.Count();
-                    response.Message = ReplyMessage.MESSAGE_QUERY;
-
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                }
-            }
-            catch (Exception ex)
+            if (categories is null)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
             }
 
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<IEnumerable<SelectResponse>>(categories);
+            response.TotalRecords = categories.Count();
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+        }
+        public async Task<BaseResponse<IEnumerable<SelectResponse>>> SPListSelectCategories()
+        {
+            var response = new BaseResponse<IEnumerable<SelectResponse>>();
+
+            var categories = await _categoryRepositoryDapper.GetAllCategoriesAsync();
+
+            if (categories is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<IEnumerable<SelectResponse>>(categories);
+            response.TotalRecords = categories.Count();
+            response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }
         public async Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId)
         {
             var response = new BaseResponse<CategoryResponseDto>();
 
-            try
-            {
-                var category = await _unitOfWork.Category.GetByIdAsync(categoryId);
+            var category = await _unitOfWork.Category.GetByIdAsync(categoryId);
 
-                if (category is null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                    return response;
-                }
-
-                response.IsSuccess = true;
-                response.Data = _mapper.Map<CategoryResponseDto>(category);
-                response.Message = ReplyMessage.MESSAGE_QUERY;
-
-            }
-            catch (Exception ex)
+            if (category is null)
             {
                 response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
-                WatchLogger.Log(ex.Message);
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
             }
 
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<CategoryResponseDto>(category);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+        }
+        public async Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId)
+        {
+            var response = new BaseResponse<CategoryResponseDto>();
+
+            var category = await _categoryRepositoryDapper.GetCategoryByIdAsync(categoryId);
+
+            if (category is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<CategoryResponseDto>(category);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }
         public async Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto)

@@ -24,6 +24,5 @@ namespace POS.Infrastructure.Persistences.Repositories
             return user!;
         }
 
-
     }
 }

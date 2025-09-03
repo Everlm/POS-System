@@ -11,7 +11,9 @@ namespace POS.Application.Interfaces
         Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument();
         Task<BaseResponse<IEnumerable<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters);
         Task<BaseResponse<IEnumerable<SelectResponse>>> ListSelectCategories();
+        Task<BaseResponse<IEnumerable<SelectResponse>>> SPListSelectCategories();
         Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId);
+        Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId);
         Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto);
         Task<BaseResponse<bool>> EditCategory(CategoryRequestDto requestDto, int categoryId);
         Task<BaseResponse<bool>> DeleteCategory(int categoryId);
