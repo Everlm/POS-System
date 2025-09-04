@@ -1,54 +1,29 @@
-using Microsoft.AspNetCore.Authorization;
 using POS.Api.Extensions;
 using POS.Api.Hubs;
-using POS.API.Authentication;
 using POS.API.Extensions;
 using POS.API.Middlewares;
 using POS.Application.Extensions;
-using POS.Application.Interfaces;
 using POS.Infrastructure.Extensions;
 using QuestPDF.Infrastructure;
 using WatchDog;
 
+#region Services
 
 var builder = WebApplication.CreateBuilder(args);
-QuestPDF.Settings.License = LicenseType.Community;
-var Configuration = builder.Configuration;
 var Cors = "Cors";
-
+var Configuration = builder.Configuration;
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddInjectionInfrastructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
 builder.Services.AddAuthentication(Configuration);
 builder.Services.AddAppAuthorizationPolicies();
+builder.Services.DefaultServices(Cors);
+builder.Services.AppScopedServices();
 
-builder.Services.AddScoped<IAuthorizationHandler, ApiKeyHandler>();
-builder.Services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();
+#endregion
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwagger();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddSignalR();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: Cors,
-    builder =>
-    {
-        builder.WithOrigins(
-            "http://localhost:4200",
-            "https://tuproduccion.com",
-            "https://localhost:443",
-            "http://localhost",
-            "http://localhost:80"
-            )
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials();
-    });
-});
-
+#region Middleware
 
 var app = builder.Build();
 
@@ -89,5 +64,7 @@ app.MapHub<AuthHub>("/authHub");
 app.MapGet("/health", () => Results.Ok("OK"));
 
 app.Run();
+
+#endregion
 
 public partial class Program { }

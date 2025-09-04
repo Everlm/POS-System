@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Dtos.Category.Request;
 using POS.Application.Interfaces;
@@ -61,24 +63,10 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("sp/Select")]
-        public async Task<IActionResult> SPListSelectCategories()
-        {
-            var response = await _categoryApplication.SPListSelectCategories();
-            return Ok(response);
-        }
-
         [HttpGet("{categoryId:int}")]
         public async Task<IActionResult> GetCategoryById(int categoryId)
         {
             var response = await _categoryApplication.GetCategoryById(categoryId);
-            return Ok(response);
-        }
-
-        [HttpGet("sp/{categoryId:int}")]
-        public async Task<IActionResult> SPGetCategoryById(int categoryId)
-        {
-            var response = await _categoryApplication.SPGetCategoryById(categoryId);
             return Ok(response);
         }
 
@@ -89,13 +77,6 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("sp/create")]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDto requestDto)
-        {
-            var response = await _categoryApplication.SPCreateCategory(requestDto);
-            return Ok(response);
-        }
-
         [HttpPut("Edit/{categoryId:int}")]
         public async Task<IActionResult> EditCategory(int categoryId, [FromBody] CategoryRequestDto requestDto)
         {
@@ -103,17 +84,43 @@ namespace POS.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("sp/Update/{categoryId:int}")]
-        public async Task<IActionResult> SPUpdateCategory(int categoryId, [FromBody] CategoryRequestDto requestDto)
-        {
-            var response = await _categoryApplication.SPUpdateCategory(requestDto, categoryId);
-            return Ok(response);
-        }
-
         [HttpPut("Delete/{categoryId:int}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {
             var response = await _categoryApplication.DeleteCategory(categoryId);
+            return Ok(response);
+        }
+
+        [HttpGet("sp/Select")]
+        public async Task<IActionResult> SPListSelectCategories()
+        {
+            // var isAuthenticated = User.Identity?.IsAuthenticated;
+            // var email1 = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            // var userName1 = User.FindFirstValue(ClaimTypes.Surname);
+            // var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+            // var claims = User.Claims;
+
+            var response = await _categoryApplication.SPListSelectCategories();
+            return Ok(response);
+        }
+
+        [HttpGet("sp/{categoryId:int}")]
+        public async Task<IActionResult> SPGetCategoryById(int categoryId)
+        {
+            var response = await _categoryApplication.SPGetCategoryById(categoryId);
+            return Ok(response);
+        }
+
+        [HttpPost("sp/create")]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDto requestDto)
+        {
+            var response = await _categoryApplication.SPCreateCategory(requestDto);
+            return Ok(response);
+        }
+        [HttpPut("sp/Update/{categoryId:int}")]
+        public async Task<IActionResult> SPUpdateCategory(int categoryId, [FromBody] CategoryRequestDto requestDto)
+        {
+            var response = await _categoryApplication.SPUpdateCategory(requestDto, categoryId);
             return Ok(response);
         }
 

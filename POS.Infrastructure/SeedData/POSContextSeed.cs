@@ -26,26 +26,31 @@ namespace POS.Infrastructure.SeedData
                 new Role
                 {
                     RoleId = 1,
-                    Description = "Admin"
+                    Description = "Admin",
+                    State = 1
                 },
                 new Role
                 {
                     RoleId = 2,
-                    Description = "General"
+                    Description = "General",
+                    State = 1
                 }
             );
             modelBuilder.Entity<UserRole>().HasData(
                 new UserRole
                 {
-                    UserRoleId = -1,
+                    UserRoleId = 1,
                     UserId = 1,
-                    RoleId = 1
+                    RoleId = 1,
+                    State = 1
+
                 },
                 new UserRole
                 {
-                    UserRoleId = -2,
+                    UserRoleId = 2,
                     UserId = 1,
-                    RoleId = 2
+                    RoleId = 2,
+                    State = 1
                 }
             );
             modelBuilder.Entity<Category>().HasData(

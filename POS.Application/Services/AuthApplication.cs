@@ -11,6 +11,7 @@ using POS.Domain.Entities;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.AppSettings;
 using POS.Utilities.Static;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -74,7 +75,7 @@ namespace POS.Application.Services
                 Token = token,
                 RefreshToken = refreshToken,
             };
-            
+
             response.Message = ReplyMessage.MESSAGE_TOKEN;
             return response;
         }
@@ -263,6 +264,8 @@ namespace POS.Application.Services
 
             var claims = new List<Claim>
             {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim(JwtRegisteredClaimNames.NameId, user.Email!),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.UserName!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -279,7 +282,7 @@ namespace POS.Application.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:Expiret"])),
+                expires: DateTime.UtcNow.AddHours(int.Parse(_config["Jwt:Expiret"])),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: Credentials
 

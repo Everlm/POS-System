@@ -30,6 +30,7 @@ namespace POS.Api.Extensions
                 });
 
             });
+            
 
             return services;
         }

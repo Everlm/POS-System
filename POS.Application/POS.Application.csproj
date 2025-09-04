@@ -1,11 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
@@ -16,11 +14,9 @@
     <PackageReference Include="QuestPDF" Version="2025.7.0" />
     <PackageReference Include="WatchDog.NET" Version="1.4.6" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\POS.Domain\POS.Domain.csproj" />
     <ProjectReference Include="..\POS.Infrastructure\POS.Infrastructure.csproj" />
     <ProjectReference Include="..\POS.Utilities\POS.Utilities.csproj" />
   </ItemGroup>
-
 </Project>

@@ -28,9 +28,9 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
-  <None Update="appsettings*.json">
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-  </None>
-</ItemGroup>
+    <None Update="appsettings*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
 </Project>

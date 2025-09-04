@@ -26,8 +26,9 @@ namespace POS.Application.Services
         private readonly IDocumentGenerator _documentGenerator;
         private readonly IDocumentFactory _documentFactory;
         private readonly ICategoryRepositoryDapper _categoryRepositoryDapper;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory, ICategoryRepositoryDapper categoryRepositoryDapper)
+        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory, ICategoryRepositoryDapper categoryRepositoryDapper, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -36,7 +37,11 @@ namespace POS.Application.Services
             _documentGenerator = documentGenerator;
             _documentFactory = documentFactory;
             _categoryRepositoryDapper = categoryRepositoryDapper;
+            _currentUserService = currentUserService;
+
         }
+
+        //EF methods
         public async Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument()
         {
             var response = new BaseResponse<byte[]>();
@@ -65,6 +70,7 @@ namespace POS.Application.Services
             response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }
+        
         public async Task<BaseResponse<IEnumerable<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters)
         {
             var response = new BaseResponse<IEnumerable<CategoryResponseDto>>();
@@ -95,6 +101,7 @@ namespace POS.Application.Services
 
             return response;
         }
+
         public async Task<BaseResponse<IEnumerable<SelectResponse>>> ListSelectCategories()
         {
             var response = new BaseResponse<IEnumerable<SelectResponse>>();
@@ -114,25 +121,7 @@ namespace POS.Application.Services
             response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }
-        public async Task<BaseResponse<IEnumerable<SelectResponse>>> SPListSelectCategories()
-        {
-            var response = new BaseResponse<IEnumerable<SelectResponse>>();
 
-            var categories = await _categoryRepositoryDapper.GetAllCategoriesAsync();
-
-            if (categories is null)
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                return response;
-            }
-
-            response.IsSuccess = true;
-            response.Data = _mapper.Map<IEnumerable<SelectResponse>>(categories);
-            response.TotalRecords = categories.Count();
-            response.Message = ReplyMessage.MESSAGE_QUERY;
-            return response;
-        }
         public async Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId)
         {
             var response = new BaseResponse<CategoryResponseDto>();
@@ -151,24 +140,7 @@ namespace POS.Application.Services
             response.Message = ReplyMessage.MESSAGE_QUERY;
             return response;
         }
-        public async Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId)
-        {
-            var response = new BaseResponse<CategoryResponseDto>();
 
-            var category = await _categoryRepositoryDapper.GetCategoryByIdAsync(categoryId);
-
-            if (category is null)
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                return response;
-            }
-
-            response.IsSuccess = true;
-            response.Data = _mapper.Map<CategoryResponseDto>(category);
-            response.Message = ReplyMessage.MESSAGE_QUERY;
-            return response;
-        }
         public async Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto)
         {
             var response = new BaseResponse<bool>();
@@ -198,36 +170,7 @@ namespace POS.Application.Services
 
             return response;
         }
-        public async Task<BaseResponse<bool>> SPCreateCategory(CategoryRequestDto requestDto)
-        {
-            var response = new BaseResponse<bool>();
-            var validationResult = await _validateRules.ValidateAsync(requestDto);
 
-            if (!validationResult.IsValid)
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_VALIDATE;
-                response.Errors = validationResult.Errors;
-                return response;
-            }
-
-            var category = _mapper.Map<Category>(requestDto);
-            category.AuditCreateUser = 1;
-            response.Data = await _categoryRepositoryDapper.CreateCategoryAsync(category);
-
-            if (response.Data)
-            {
-                response.IsSuccess = true;
-                response.Message += ReplyMessage.MESSAGE_SAVE;
-            }
-            else
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_FAILED;
-            }
-
-            return response;
-        }
         public async Task<BaseResponse<bool>> EditCategory(CategoryRequestDto requestDto, int categoryId)
         {
             var response = new BaseResponse<bool>();
@@ -260,37 +203,7 @@ namespace POS.Application.Services
             return response;
 
         }
-        public async Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId)
-        {
-            var response = new BaseResponse<bool>();
-            var categoryToUpdate = await SPGetCategoryById(categoryId);
 
-            if (categoryToUpdate.Data is null)
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
-                return response;
-            }
-
-            var category = _mapper.Map<Category>(requestDto);
-            category.Id = categoryId;
-            category.AuditUpdateUser = 1;
-            response.Data = await _categoryRepositoryDapper.UpdateCategoryAsync(category);
-
-            if (response.Data)
-            {
-                response.IsSuccess = true;
-                response.Message = ReplyMessage.MESSAGE_UPDATE;
-            }
-            else
-            {
-                response.IsSuccess = false;
-                response.Message = ReplyMessage.MESSAGE_FAILED;
-            }
-
-            return response;
-
-        }
         public async Task<BaseResponse<bool>> DeleteCategory(int categoryId)
         {
             var response = new BaseResponse<bool>();
@@ -318,6 +231,111 @@ namespace POS.Application.Services
 
             return response;
         }
+
+        //SP Methods
+        public async Task<BaseResponse<IEnumerable<SelectResponse>>> SPListSelectCategories()
+        {
+            var response = new BaseResponse<IEnumerable<SelectResponse>>();
+
+            var categories = await _categoryRepositoryDapper.GetAllCategoriesAsync();
+
+            if (categories is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<IEnumerable<SelectResponse>>(categories);
+            response.TotalRecords = categories.Count();
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+        }
+
+        public async Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId)
+        {
+            var response = new BaseResponse<CategoryResponseDto>();
+
+            var category = await _categoryRepositoryDapper.GetCategoryByIdAsync(categoryId);
+
+            if (category is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.Data = _mapper.Map<CategoryResponseDto>(category);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> SPCreateCategory(CategoryRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+            var validationResult = await _validateRules.ValidateAsync(requestDto);
+
+            if (!validationResult.IsValid)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_VALIDATE;
+                response.Errors = validationResult.Errors;
+                return response;
+            }
+
+            var category = _mapper.Map<Category>(requestDto);
+            category.AuditCreateUser = 1;
+            response.Data = await _categoryRepositoryDapper.CreateCategoryAsync(category);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message += ReplyMessage.MESSAGE_SAVE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId)
+        {
+            var response = new BaseResponse<bool>();
+            var categoryToUpdate = await SPGetCategoryById(categoryId);
+
+            if (categoryToUpdate.Data is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+            }
+
+            var category = _mapper.Map<Category>(requestDto);
+            category.Id = categoryId;
+            var userId = _currentUserService.UserId;
+            category.AuditUpdateUser = userId;
+            response.Data = await _categoryRepositoryDapper.UpdateCategoryAsync(category);
+
+            if (response.Data)
+            {
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_UPDATE;
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_FAILED;
+            }
+
+            return response;
+
+        }
+
         public async Task<BaseResponse<bool>> SPDeleteCategory(int categoryId)
         {
             var response = new BaseResponse<bool>();
@@ -348,6 +366,7 @@ namespace POS.Application.Services
 
             return response;
         }
+
         public async Task<BaseResponse<bool>> SPHardDeleteCategory(int categoryId)
         {
             var response = new BaseResponse<bool>();
@@ -377,6 +396,7 @@ namespace POS.Application.Services
             return response;
         }
 
+        //other methods
         private static IQueryable<Category> ApplyFilters(IQueryable<Category> query, BaseFiltersRequest filters)
         {
             if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))

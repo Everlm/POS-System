@@ -7,18 +7,20 @@ using POS.Application.Dtos.Category.Response;
 namespace POS.Application.Interfaces
 {
     public interface ICategoryApplication
-    {  
+    {
         Task<BaseResponse<byte[]>> GenerateCategoriesPdfDocument();
         Task<BaseResponse<IEnumerable<CategoryResponseDto>>> ListCategories(BaseFiltersRequest filters);
         Task<BaseResponse<IEnumerable<SelectResponse>>> ListSelectCategories();
-        Task<BaseResponse<IEnumerable<SelectResponse>>> SPListSelectCategories();
         Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId);
-        Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId);
         Task<BaseResponse<bool>> RegisterCategory(CategoryRequestDto requestDto);
-        Task<BaseResponse<bool>> SPCreateCategory(CategoryRequestDto requestDto);
         Task<BaseResponse<bool>> EditCategory(CategoryRequestDto requestDto, int categoryId);
-        Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId);
         Task<BaseResponse<bool>> DeleteCategory(int categoryId);
+
+        //SP Methods
+        Task<BaseResponse<IEnumerable<SelectResponse>>> SPListSelectCategories();
+        Task<BaseResponse<CategoryResponseDto>> SPGetCategoryById(int categoryId);
+        Task<BaseResponse<bool>> SPCreateCategory(CategoryRequestDto requestDto);
+        Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId);
         Task<BaseResponse<bool>> SPDeleteCategory(int categoryId);
         Task<BaseResponse<bool>> SPHardDeleteCategory(int categoryId);
     }
