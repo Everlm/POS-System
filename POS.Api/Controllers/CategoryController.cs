@@ -26,6 +26,11 @@ namespace POS.API.Controllers
             _generateExcelApplication = generateExcelApplication;
         }
 
+        /// <summary>
+        /// Genera un documento PDF con la lista de categorías.
+        /// </summary>
+        /// <returns>Archivo PDF de categorías.</returns>
+        /// <response code="200">Devuelve el archivo PDF generado.</response>
         [HttpGet("GenerateCategoriesPdfDocument")]
         public async Task<IActionResult> GenerateCategoriesPdfDocument()
         {
