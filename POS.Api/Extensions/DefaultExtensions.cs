@@ -7,13 +7,12 @@ namespace POS.API.Extensions;
 
 public static class DefaultExtensions
 {
-    public static IServiceCollection DefaultServices(this IServiceCollection services, string cors)
+    public static IServiceCollection AddDefaultServices(this IServiceCollection services, string cors)
     {
 
       
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwagger();
         services.AddHttpContextAccessor();
         services.AddSignalR();
 
@@ -37,7 +36,7 @@ public static class DefaultExtensions
         return services;
     }
 
-    public static IServiceCollection AppScopedServices(this IServiceCollection services)
+    public static IServiceCollection AddAppScopedServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthorizationHandler, ApiKeyHandler>();
         services.AddScoped<ISignalRNotifierService, SignalRNotifierService>();

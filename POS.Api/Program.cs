@@ -18,8 +18,11 @@ builder.Services.AddInjectionInfrastructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
 builder.Services.AddAuthentication(Configuration);
 builder.Services.AddAppAuthorizationPolicies();
-builder.Services.DefaultServices(Cors);
-builder.Services.AppScopedServices();
+builder.Services.AddDefaultServices(Cors);
+builder.Services.AddVersioningAPI();
+builder.Services.AddSwagger();
+builder.Services.AddAppScopedServices();
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 #endregion
 
@@ -33,8 +36,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerWithVersioning();
     app.ApplyMigrations();
 }
 

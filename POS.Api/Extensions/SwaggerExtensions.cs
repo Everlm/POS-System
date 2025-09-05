@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 namespace POS.API.Extensions
@@ -8,35 +11,12 @@ namespace POS.API.Extensions
     {
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
-
-            var openApi = new OpenApiInfo
-            {
-                Title = "POS System",
-                Version = "v1",
-                Description = "Poin of sale API 2023",
-                TermsOfService = new Uri("https://opensource.org/licenses/MIT"),
-                Contact = new OpenApiContact
-                {
-                    Name = "EverDev",
-                    Email = "Everlm17@gmail.com",
-                    Url = new Uri("https://www.linkedin.com/in/deveverlm/")
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "License",
-                    Url = new Uri("https://opensource.org/licenses/MIT")
-                }
-
-            };
-
+            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(x =>
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 x.IncludeXmlComments(xmlPath);
-
-                openApi.Version = "v1";
-                x.SwaggerDoc("v1", openApi);
 
                 var securityScheme = new OpenApiSecurityScheme
                 {
@@ -60,10 +40,30 @@ namespace POS.API.Extensions
                     {securityScheme, new string[] {} }
                 });
 
-               
+
             });
 
             return services;
+        }
+
+        public static IApplicationBuilder UseSwaggerWithVersioning(this WebApplication app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(config =>
+            {
+                var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+                string baseRouteJsonSwagger = string.IsNullOrWhiteSpace(config.RoutePrefix) ? "." : "..";
+
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    config.SwaggerEndpoint(
+                        $"{baseRouteJsonSwagger}/swagger/{description.GroupName}/swagger.json",
+                        $"POS API {description.GroupName.ToUpperInvariant()}"
+                    );
+                }
+            });
+
+            return app;
         }
     }
 }
