@@ -6,7 +6,7 @@ using POS.Application.Interfaces;
 namespace POS.API.Controllers.v2
 {
     [ApiController]
-    [ApiVersion("2.0")]
+    [ApiVersion("2.0", Deprecated = true)]
     [Route("api/v{version:apiVersion}/[controller]")]
     // [Authorize]
     // [AllowAnonymous]

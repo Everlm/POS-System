@@ -21,8 +21,9 @@ builder.Services.AddAppAuthorizationPolicies();
 builder.Services.AddDefaultServices(Cors);
 builder.Services.AddVersioningAPI();
 builder.Services.AddSwagger();
-builder.Services.AddAppScopedServices();
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+builder.Services.AddAppScopedServices();
+
 
 #endregion
 

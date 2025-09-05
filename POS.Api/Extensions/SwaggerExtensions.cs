@@ -1,8 +1,6 @@
 ﻿using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 namespace POS.API.Extensions
@@ -11,7 +9,6 @@ namespace POS.API.Extensions
     {
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
-            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(x =>
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

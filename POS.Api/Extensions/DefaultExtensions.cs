@@ -9,8 +9,6 @@ public static class DefaultExtensions
 {
     public static IServiceCollection AddDefaultServices(this IServiceCollection services, string cors)
     {
-
-      
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddHttpContextAccessor();

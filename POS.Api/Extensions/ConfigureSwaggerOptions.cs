@@ -8,19 +8,19 @@ namespace POS.API.Extensions;
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
     private readonly IApiVersionDescriptionProvider _provider;
+
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
-    {
-        _provider = provider;
-    }
+        => _provider = provider;
+
     public void Configure(SwaggerGenOptions options)
     {
         foreach (var description in _provider.ApiVersionDescriptions)
         {
-            options.SwaggerDoc(description.GroupName, new OpenApiInfo
+            var info = new OpenApiInfo
             {
                 Title = "POS",
                 Version = description.ApiVersion.ToString(),
-                Description = "Point of Sale API 2023",
+                Description = "A simple POS API",
                 Contact = new OpenApiContact
                 {
                     Name = "EverCodes",
@@ -32,7 +32,14 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
                     Name = "MIT",
                     Url = new Uri("https://opensource.org/licenses/MIT")
                 }
-            });
+            };
+
+            if (description.IsDeprecated)
+            {
+                info.Description += "<font color=\"#FF0000\"><b>This API version has been DEPRECATED.</b></font>";
+            }
+
+            options.SwaggerDoc(description.GroupName, info);
         }
     }
 }

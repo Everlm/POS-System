@@ -11,7 +11,8 @@ namespace POS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [ApiVersion("1.0")]
+    //Aqui no funciona por la ruta [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0", Deprecated = true)]
     // [Authorize]
     // [AllowAnonymous]
     public class CategoryController : ControllerBase
