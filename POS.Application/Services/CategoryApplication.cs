@@ -27,8 +27,9 @@ namespace POS.Application.Services
         private readonly IDocumentFactory _documentFactory;
         private readonly ICategoryRepositoryDapper _categoryRepositoryDapper;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ICategoryApiRefit _categoryApiRefit;
 
-        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory, ICategoryRepositoryDapper categoryRepositoryDapper, ICurrentUserService currentUserService)
+        public CategoryApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validateRules, IOrderingQuery orderingQuery, IDocumentGenerator documentGenerator, IDocumentFactory documentFactory, ICategoryRepositoryDapper categoryRepositoryDapper, ICurrentUserService currentUserService, ICategoryApiRefit categoryApiRefit)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -38,6 +39,7 @@ namespace POS.Application.Services
             _documentFactory = documentFactory;
             _categoryRepositoryDapper = categoryRepositoryDapper;
             _currentUserService = currentUserService;
+            _categoryApiRefit = categoryApiRefit;
 
         }
 
@@ -125,6 +127,9 @@ namespace POS.Application.Services
         public async Task<BaseResponse<CategoryResponseDto>> GetCategoryById(int categoryId)
         {
             var response = new BaseResponse<CategoryResponseDto>();
+
+            // Example of using Refit client to get categories from an external API
+            var result = await _categoryApiRefit.GetCategoriesAsync();
 
             var category = await _unitOfWork.Category.GetByIdAsync(categoryId);
 

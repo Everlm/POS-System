@@ -8,6 +8,7 @@ using POS.Application.Extensions.WatchDog;
 using POS.Application.Interfaces;
 using POS.Application.Services;
 using POS.Infrastructure.FileStorage;
+using POS.Utilities.Static;
 using System.Reflection;
 
 namespace POS.Application.Extensions
@@ -42,6 +43,9 @@ namespace POS.Application.Extensions
             services.AddTransient<IAzureStorage, AzureStorage>();
             services.AddTransient<IFileLocalStorageApplication, FileLocalStorageApplication>();
             services.AddWatchDog();
+
+            //API Refit Clients
+            services.AddMyRefitClient<ICategoryApiRefit>(ApiNames.POSApi);
 
             return services;
         }

@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using POS.Api.Hubs;
 using POS.API.Authentication;
 using POS.Application.Interfaces;
+using POS.Utilities.Static;
 
 namespace POS.API.Extensions;
 
 public static class DefaultExtensions
 {
-    public static IServiceCollection AddDefaultServices(this IServiceCollection services, string cors)
+    public static IServiceCollection AddDefaultServices(this IServiceCollection services, IConfiguration configuration, string cors)
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();

@@ -4,9 +4,11 @@ using POS.API.Extensions;
 using POS.API.Middlewares;
 using POS.Application.Extensions;
 using POS.Infrastructure.Extensions;
+using POS.Utilities.Static;
 using QuestPDF.Infrastructure;
 using WatchDog;
 
+// Program.cs
 #region Services
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +16,13 @@ var Cors = "Cors";
 var Configuration = builder.Configuration;
 QuestPDF.Settings.License = LicenseType.Community;
 
+builder.Services.Configure<ApiServicesSettings>(
+    builder.Configuration.GetSection("APIServices"));
 builder.Services.AddInjectionInfrastructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
 builder.Services.AddAuthentication(Configuration);
 builder.Services.AddAppAuthorizationPolicies();
-builder.Services.AddDefaultServices(Cors);
+builder.Services.AddDefaultServices(Configuration, Cors);
 builder.Services.AddVersioningAPI();
 builder.Services.AddSwagger();
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();

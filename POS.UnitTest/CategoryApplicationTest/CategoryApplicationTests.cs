@@ -25,6 +25,7 @@ namespace PPOS.UnitTest.CategoryApplicationTest
         private readonly Mock<IDocumentFactory> _documentFactoryMock;
         private readonly Mock<ICategoryRepositoryDapper> _categoryRepositoryDapperMock;
         private readonly Mock<ICurrentUserService> _currentUserService;
+        private readonly Mock<ICategoryApiRefit> _categoryApiRefitMock;
 
         public CategoryApplicationTests()
         {
@@ -40,6 +41,7 @@ namespace PPOS.UnitTest.CategoryApplicationTest
             _documentFactoryMock = new Mock<IDocumentFactory>();
             _categoryRepositoryDapperMock = new Mock<ICategoryRepositoryDapper>();
             _currentUserService = new Mock<ICurrentUserService>();
+            _categoryApiRefitMock = new Mock<ICategoryApiRefit>();
 
             _categoryApplication = new CategoryApplication(
                 _unitOfWorkMock.Object,
@@ -49,7 +51,8 @@ namespace PPOS.UnitTest.CategoryApplicationTest
                 _documentGeneratorMock.Object,
                 _documentFactoryMock.Object,
                 _categoryRepositoryDapperMock.Object,
-                _currentUserService.Object
+                _currentUserService.Object,
+                _categoryApiRefitMock.Object
             );
         }
 

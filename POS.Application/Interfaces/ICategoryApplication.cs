@@ -23,5 +23,6 @@ namespace POS.Application.Interfaces
         Task<BaseResponse<bool>> SPUpdateCategory(CategoryRequestDto requestDto, int categoryId);
         Task<BaseResponse<bool>> SPDeleteCategory(int categoryId);
         Task<BaseResponse<bool>> SPHardDeleteCategory(int categoryId);
+       
     }
 }
