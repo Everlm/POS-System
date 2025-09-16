@@ -41,7 +41,7 @@ namespace POS.API.Controllers
                 return BadRequest(response);
             }
 
-            return File(response.Data!, "application/pdf", "CategoriesReport.pdf");
+            return File(response.Data!, ContentType.ContentTypePdf, "CategoriesReport.pdf");
         }
 
         [HttpGet]
