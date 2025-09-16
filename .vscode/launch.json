@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/POS.Api/bin/Debug/net6.0/POS.API.dll",
+            "program": "${workspaceFolder}/POS.Api/bin/Debug/net8.0/POS.API.dll",
             "args": [],
             "cwd": "${workspaceFolder}/POS.Api",
             "stopAtEntry": false,

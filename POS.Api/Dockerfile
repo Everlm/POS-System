@@ -1,6 +1,6 @@
 
 # Stage 1: Build the application
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
@@ -20,7 +20,7 @@ WORKDIR "/src/POS.Api"
 RUN dotnet publish "./POS.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Stage 2: Create the final production image  with HTTPS certificate
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
 # Install openssl and generate self-signed cert

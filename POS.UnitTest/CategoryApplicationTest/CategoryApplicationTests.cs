@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Ordering;
@@ -31,7 +32,7 @@ namespace PPOS.UnitTest.CategoryApplicationTest
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
 
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<CategoryMappingsProfile>());
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<CategoryMappingsProfile>(), NullLoggerFactory.Instance);
             _mapper = config.CreateMapper();
 
             _validateRules = new CategoryValidator();

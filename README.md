@@ -6,8 +6,8 @@ This project focuses on developing the backend of a point of sale system, with t
 ## Technologies
 
 * [Clean Architecture](https://github.com/jasontaylordev/CleanArchitecture)
-* [Repository and Unit of Work Patterns](https://learn.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
-* [ASP.NET Core 6](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application)
+* [Repository and Unit of Work Patterns](https://learn.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-8.0)
+* [ASP.NET Core 8](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application)
 * [Entity Framework Core 6](https://docs.microsoft.com/en-us/ef/core/)
 * [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16)
 * [WatchDog](https://github.com/IzyPro/WatchDog)

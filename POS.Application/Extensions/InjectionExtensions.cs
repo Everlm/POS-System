@@ -19,7 +19,7 @@ namespace POS.Application.Extensions
         {
             services.AddSingleton(configuration);
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(mapperConfig => { }, Assembly.GetExecutingAssembly());
             services.AddScoped<IDocumentGenerator, DocumentGenerator>();
             services.AddScoped<IDocumentFactory, DocumentFactory>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
